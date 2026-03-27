@@ -235,18 +235,33 @@
 
 		if (availableDates.includes(value)) return value;
 
-		if (datasetMin && datasetMax && value >= datasetMin && value <= datasetMax) {
+		if (
+			datasetMin &&
+			datasetMax &&
+			value >= datasetMin &&
+			value <= datasetMax
+		) {
 			return value;
 		}
 
 		// If user selects a "gap" date (after dataset max but before forecast min),
 		// snap to the nearest valid date (forecastMin when available, else datasetMax).
-		if (datasetMax && forecastMin && value > datasetMax && value < forecastMin) {
+		if (
+			datasetMax &&
+			forecastMin &&
+			value > datasetMax &&
+			value < forecastMin
+		) {
 			return forecastMin || datasetMax;
 		}
 
 		// If it's after dataset max and outside forecast window, snap to forecastMin.
-		if (datasetMax && forecastMin && value > datasetMax && value > forecastMax) {
+		if (
+			datasetMax &&
+			forecastMin &&
+			value > datasetMax &&
+			value > forecastMax
+		) {
 			return forecastMin;
 		}
 
@@ -306,8 +321,8 @@
 				<div class="flex items-center justify-between gap-4">
 					<div class="text-(--theme-muted)">Mode</div>
 					<div class="font-semibold text-(--theme-text)">
-						{predictionModes.find((mode) => mode.value === selectedMode)?.label ??
-							selectedMode}
+						{predictionModes.find((mode) => mode.value === selectedMode)
+							?.label ?? selectedMode}
 					</div>
 				</div>
 				{#if selectedDate}
@@ -359,7 +374,7 @@
 		<section
 			id="dashboard-summary"
 			data-testid="dashboard-summary"
-			class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+			class="grid gap-4 grid-cols-3"
 		>
 			<div
 				id="dashboard-summary-temperature"
@@ -375,22 +390,6 @@
 				</div>
 				<div class="mt-2 text-sm text-(--theme-text)">
 					Feels like {weather.current.apparentTemperature.toFixed(1)}°C
-				</div>
-			</div>
-			<div
-				id="dashboard-summary-conditions"
-				data-testid="dashboard-summary-conditions"
-				class="rounded-[1.8rem] border border-(--theme-border) bg-white/85 p-5 shadow-(--theme-shadow)"
-			>
-				<div class="text-sm text-(--theme-muted)">Conditions</div>
-				<div
-					class="mt-3 text-2xl font-semibold text-(--theme-text)"
-					style="font-family: Georgia, 'Times New Roman', serif;"
-				>
-					{weatherCodeLabel(weather.current.weatherCode)}
-				</div>
-				<div class="mt-2 text-sm text-(--theme-text)">
-					{weather.location.label} · {weather.location.timezone}
 				</div>
 			</div>
 			<div
@@ -598,7 +597,7 @@
 								style="font-family: Georgia, 'Times New Roman', serif;"
 							>
 								{prediction.anomalyPrediction.isAnomaly
-									? "Anomaly likely"
+									? "Anomaly"
 									: "Normal pattern"}
 							</div>
 							<div class="mt-2 text-sm text-(--theme-text)">

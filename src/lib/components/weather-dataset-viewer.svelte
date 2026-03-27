@@ -313,7 +313,7 @@
 					id="dataset-search"
 					data-testid="dataset-search"
 					bind:value={search}
-					placeholder="Search by city, date, or condition"
+					placeholder="Search by city or date"
 					class="h-11 border-(--theme-border) bg-white text-(--theme-text) placeholder:text-(--theme-muted) focus-visible:border-(--theme-accent) focus-visible:ring-(--theme-soft-45)"
 				/>
 			</div>
@@ -477,7 +477,6 @@
 							<tr>
 								<th class="px-4 py-3 font-medium">Date</th>
 								<th class="px-4 py-3 font-medium">City</th>
-								<th class="px-4 py-3 font-medium">Condition</th>
 								<th class="px-4 py-3 font-medium">Mean temp</th>
 								<th class="px-4 py-3 font-medium">Min / Max</th>
 								<th class="px-4 py-3 font-medium">Rain</th>
@@ -504,14 +503,6 @@
 										</div>
 										<div class="mt-1 text-xs text-(--theme-muted)">
 											{row.country}
-										</div>
-									</td>
-									<td class="px-4 py-4">
-										<div class="font-medium text-(--theme-text)">
-											{weatherCodeLabel(row.weatherCode)}
-										</div>
-										<div class="mt-1 text-xs text-(--theme-muted)">
-											Code {row.weatherCode}
 										</div>
 									</td>
 									<td class="px-4 py-4">{formatNumber(row.tempMean)}°C</td>

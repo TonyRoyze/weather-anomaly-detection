@@ -496,7 +496,7 @@
 						</div>
 						<div class="mt-3 text-sm text-(--theme-text)">
 							{forecastPrediction?.anomalyPrediction.isAnomaly
-								? "Anomaly likely"
+								? "Anomaly"
 								: "Normal pattern"}
 						</div>
 						{#if forecastPrediction}
