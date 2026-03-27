@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,12 @@ from xgboost import XGBClassifier
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 # Optional: the CSV is useful for local training and historical backfills, but it is
 # not required at runtime when a prebuilt model artifact is shipped (e.g. on Vercel).
-DATASET_PATH = Path(__file__).resolve().parents[3] / "src" / "SriLanka_Weather_Dataset_V1.csv"
+DATASET_BASENAME = "SriLanka_Weather_Dataset_V1.csv"
+# Preferred location (works when the Vercel Project Root Directory is `src-python`).
+DATASET_PATH = Path(__file__).resolve().parents[2] / "data" / DATASET_BASENAME
+# Backwards-compatible location (repo root `src/`).
+LEGACY_DATASET_PATH = Path(__file__).resolve().parents[3] / "src" / DATASET_BASENAME
+HISTORICAL_DATASET_CACHE_PATH = Path("/tmp/SriLanka_Weather_Dataset_V1.csv")
 MODEL_ARTIFACTS_DIR = Path(__file__).resolve().parents[2] / "models"
 MODEL_ARTIFACT_PATH = MODEL_ARTIFACTS_DIR / "anomaly_prediction_bundle.joblib"
 
@@ -100,11 +106,12 @@ def _safe_std(value: float) -> float:
 
 
 def _dataset_signature() -> dict[str, Any] | None:
-    if not DATASET_PATH.exists():
+    dataset_path = DATASET_PATH if DATASET_PATH.exists() else LEGACY_DATASET_PATH
+    if not dataset_path.exists():
         return None
 
-    stat = DATASET_PATH.stat()
-    return {"path": str(DATASET_PATH), "size": stat.st_size, "mtime_ns": stat.st_mtime_ns}
+    stat = dataset_path.stat()
+    return {"path": str(dataset_path), "size": stat.st_size, "mtime_ns": stat.st_mtime_ns}
 
 
 def _build_preprocessor(df: pd.DataFrame) -> tuple[ColumnTransformer, list[str]]:
@@ -141,12 +148,13 @@ def _label_anomaly_type(row: pd.Series, thresholds: dict[str, float]) -> str:
 
 
 def _train_models() -> ModelBundle:
-    if not DATASET_PATH.exists():
+    dataset_path = DATASET_PATH if DATASET_PATH.exists() else LEGACY_DATASET_PATH
+    if not dataset_path.exists():
         raise RuntimeError(
             "Training requires the SriLanka_Weather_Dataset_V1.csv dataset file, which is missing."
         )
 
-    df = pd.read_csv(DATASET_PATH)
+    df = pd.read_csv(dataset_path)
     df["time"] = pd.to_datetime(df["time"])
     df = df.drop(columns=TRAINING_DROP_COLUMNS, errors="ignore")
 
@@ -417,11 +425,52 @@ async def _fetch_forecast_payload(latitude: float, longitude: float) -> dict[str
         return response.json()
 
 
-def _find_dataset_record(label: str, selected_date: str) -> dict[str, Any] | None:
-    if not DATASET_PATH.exists():
+def _resolve_historical_dataset_path() -> Path | None:
+    """Return a readable CSV path for historical lookups.
+
+    Priority:
+    1) Repo-local dataset CSV (best for local dev/training).
+    2) Cached copy downloaded from `ANOMALIZE_DATASET_URL` into `/tmp` (serverless-friendly).
+    """
+
+    if DATASET_PATH.exists():
+        return DATASET_PATH
+
+    if LEGACY_DATASET_PATH.exists():
+        return LEGACY_DATASET_PATH
+
+    dataset_url = os.getenv("ANOMALIZE_DATASET_URL")
+    if not dataset_url:
         return None
 
-    df = pd.read_csv(DATASET_PATH)
+    if HISTORICAL_DATASET_CACHE_PATH.exists():
+        return HISTORICAL_DATASET_CACHE_PATH
+
+    temp_path = HISTORICAL_DATASET_CACHE_PATH.with_suffix(".download")
+    try:
+        with httpx.Client(timeout=60) as client:
+            with client.stream("GET", dataset_url) as response:
+                response.raise_for_status()
+                with temp_path.open("wb") as handle:
+                    for chunk in response.iter_bytes():
+                        handle.write(chunk)
+        temp_path.replace(HISTORICAL_DATASET_CACHE_PATH)
+        return HISTORICAL_DATASET_CACHE_PATH
+    except Exception as exc:  # noqa: BLE001
+        try:
+            if temp_path.exists():
+                temp_path.unlink()
+        except Exception:
+            pass
+        raise RuntimeError("Unable to download ANOMALIZE_DATASET_URL for historical predictions.") from exc
+
+
+def _find_dataset_record(label: str, selected_date: str) -> dict[str, Any] | None:
+    dataset_path = _resolve_historical_dataset_path()
+    if dataset_path is None:
+        return None
+
+    df = pd.read_csv(dataset_path)
     parsed_date = pd.to_datetime(selected_date).normalize()
     df["time"] = pd.to_datetime(df["time"])
     match = df[(df["city"] == label) & (df["time"].dt.normalize() == parsed_date)]
@@ -510,10 +559,11 @@ async def get_weather_prediction(
         source = "historical-dataset"
         dataset_record = _find_dataset_record(label=label, selected_date=selected_date)
         if dataset_record is None:
-            if not DATASET_PATH.exists():
+            if not DATASET_PATH.exists() and not os.getenv("ANOMALIZE_DATASET_URL"):
                 raise ValueError(
                     "The selected date is outside the forecast window. This deployment is configured "
-                    "without the historical CSV dataset, so only forecast-window predictions are available."
+                    "without the historical CSV dataset. Set ANOMALIZE_DATASET_URL to enable "
+                    "historical-date predictions."
                 )
             raise ValueError(
                 "The selected date is not available in the forecast window or the historical dataset."
