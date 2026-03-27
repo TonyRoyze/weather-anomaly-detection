@@ -8,7 +8,7 @@
 		type PaletteName,
 	} from "$lib/theme";
 
-	let currentPalette = $state<PaletteName>("sky");
+	let currentPalette = $state<PaletteName>("slate");
 
 	function selectPalette(palette: PaletteName) {
 		currentPalette = palette;

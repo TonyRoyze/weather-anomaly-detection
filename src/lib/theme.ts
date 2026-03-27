@@ -6,7 +6,7 @@ export const paletteOptions = [
 
 export type PaletteName = (typeof paletteOptions)[number]["value"];
 
-export const DEFAULT_PALETTE: PaletteName = "sky";
+export const DEFAULT_PALETTE: PaletteName = "slate";
 export const PALETTE_STORAGE_KEY = "anomalize-palette";
 
 export function isPaletteName(value: string | null | undefined): value is PaletteName {

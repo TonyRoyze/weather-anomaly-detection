@@ -9,6 +9,11 @@
 		WeatherPrediction,
 	} from "$lib/types/weather";
 	import { severityClasses, weatherCodeLabel } from "$lib/weather-utils";
+	import {
+		loadAppWeather,
+		loadPredictionMetadata as loadPredictionMetadataFromApi,
+		loadWeatherPrediction,
+	} from "$lib/weather-api";
 
 	const fallbackCity: LocationPreset = {
 		id: "colombo",
@@ -87,20 +92,7 @@
 		metadataLoading = true;
 
 		try {
-			const response = await fetch("/api/weather/prediction-metadata");
-			const payload = (await response.json()) as
-				| PredictionMetadata
-				| { message?: string; detail?: string };
-
-			if (!response.ok) {
-				throw new Error(
-					("detail" in payload && payload.detail) ||
-						("message" in payload && payload.message) ||
-						"Failed to load prediction metadata",
-				);
-			}
-
-			const metadata = payload as PredictionMetadata;
+			const metadata = (await loadPredictionMetadataFromApi()) as PredictionMetadata;
 			cities = metadata.cities.length > 0 ? metadata.cities : [fallbackCity];
 			selectedCity = metadata.defaultCity ?? cities[0] ?? fallbackCity;
 			predictionModes = metadata.modes;
@@ -126,28 +118,12 @@
 		predictionLoading = true;
 		predictionError = "";
 
-		const params = new URLSearchParams({
-			latitude: city.latitude.toString(),
-			longitude: city.longitude.toString(),
-			label: city.label,
-			date,
-			mode: selectedMode,
-		});
-
 		try {
-			const response = await fetch(`/api/weather/predict?${params.toString()}`);
-			const payload = (await response.json()) as
-				| WeatherPrediction
-				| { message?: string; detail?: string };
-			if (!response.ok) {
-				throw new Error(
-					("detail" in payload && payload.detail) ||
-						("message" in payload && payload.message) ||
-						"Failed to load prediction",
-				);
-			}
-
-			prediction = payload as WeatherPrediction;
+			prediction = (await loadWeatherPrediction({
+				city,
+				date,
+				mode: selectedMode,
+			})) as WeatherPrediction;
 		} catch (err) {
 			console.error(err);
 			prediction = null;
@@ -167,19 +143,8 @@
 		predictionError = "";
 		prediction = null;
 
-		const params = new URLSearchParams({
-			latitude: city.latitude.toString(),
-			longitude: city.longitude.toString(),
-			label: city.label,
-		});
-
 		try {
-			const response = await fetch(`/api/weather?${params.toString()}`);
-			if (!response.ok) {
-				throw new Error("Failed to load forecast");
-			}
-
-			weather = (await response.json()) as WeatherOverview;
+			weather = (await loadAppWeather(city)) as WeatherOverview;
 			if (!selectedDate) {
 				selectedDate = datasetDateRange.max || weather.daily[0]?.date || "";
 			}

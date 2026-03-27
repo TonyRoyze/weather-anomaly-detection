@@ -9,6 +9,11 @@
 		WeatherPrediction,
 	} from "$lib/types/weather";
 	import { severityClasses, weatherCodeLabel } from "$lib/weather-utils";
+	import {
+		loadAppWeather,
+		loadPredictionMetadata as loadPredictionMetadataFromApi,
+		loadWeatherPrediction,
+	} from "$lib/weather-api";
 
 	const fallbackCity: LocationPreset = {
 		id: "colombo",
@@ -208,27 +213,12 @@
 		try {
 			const results = await Promise.all(
 				dates.map(async (date) => {
-					const params = new URLSearchParams({
-						latitude: city.latitude.toString(),
-						longitude: city.longitude.toString(),
-						label: city.label,
+					const payload = (await loadWeatherPrediction({
+						city,
 						date,
 						mode: selectedMode,
-					});
-					const response = await fetch(
-						`/api/weather/predict?${params.toString()}`,
-					);
-					const payload = (await response.json()) as
-						| WeatherPrediction
-						| { message?: string; detail?: string };
-					if (!response.ok) {
-						throw new Error(
-							("detail" in payload && payload.detail) ||
-								("message" in payload && payload.message) ||
-								`Failed to load prediction for ${date}`,
-						);
-					}
-					return [date, payload as WeatherPrediction] as const;
+					})) as WeatherPrediction;
+					return [date, payload] as const;
 				}),
 			);
 
@@ -249,20 +239,7 @@
 		metadataLoading = true;
 
 		try {
-			const response = await fetch("/api/weather/prediction-metadata");
-			const payload = (await response.json()) as
-				| PredictionMetadata
-				| { message?: string; detail?: string };
-
-			if (!response.ok) {
-				throw new Error(
-					("detail" in payload && payload.detail) ||
-						("message" in payload && payload.message) ||
-						"Failed to load city metadata",
-				);
-			}
-
-			const metadata = payload as PredictionMetadata;
+			const metadata = (await loadPredictionMetadataFromApi()) as PredictionMetadata;
 			cities = metadata.cities.length > 0 ? metadata.cities : [fallbackCity];
 			selectedCity = metadata.defaultCity ?? cities[0] ?? fallbackCity;
 			predictionModes = metadata.modes;
@@ -286,19 +263,8 @@
 		predictionError = "";
 		dailyPredictions = {};
 
-		const params = new URLSearchParams({
-			latitude: city.latitude.toString(),
-			longitude: city.longitude.toString(),
-			label: city.label,
-		});
-
 		try {
-			const response = await fetch(`/api/weather?${params.toString()}`);
-			if (!response.ok) {
-				throw new Error("Failed to load forecast");
-			}
-
-			weather = (await response.json()) as WeatherOverview;
+			weather = (await loadAppWeather(city)) as WeatherOverview;
 			await loadDailyPredictions(
 				city,
 				weather.daily.map((day) => day.date).slice(0, 5),

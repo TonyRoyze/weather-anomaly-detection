@@ -23,6 +23,9 @@ __pycache__/
 # Demo outputs
 /src-python/demo-output/
 
+# Tauri
+src-tauri/
+
 # Env
 .env
 .env.*

@@ -16,6 +16,8 @@
 		description: string;
 	};
 
+	const isTauriBuild = import.meta.env.VITE_TAURI_BUILD === "1";
+
 	const items: NavItem[] = [
 		{
 			title: "Dataset",
@@ -52,6 +54,9 @@
 							id="sidebar-home-link"
 							data-testid="sidebar-home-link"
 							href="/"
+							onclick={(event) => {
+								if (isTauriBuild) event.preventDefault();
+							}}
 							{...props}
 						>
 							<div

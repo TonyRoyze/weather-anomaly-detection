@@ -128,6 +128,7 @@ If you are returning to the project later, this is the shortest path:
 ```bash
 pnpm run dev         # Start the frontend
 pnpm run dev:api     # Start the FastAPI backend
+pnpm run dev:tauri   # Start the frontend in Tauri mode
 pnpm run build       # Build the frontend
 pnpm run preview     # Preview the production frontend build
 pnpm run check       # Run Svelte type + diagnostics checks
@@ -165,3 +166,31 @@ Make sure the FastAPI server is running in a separate terminal with:
 ```bash
 pnpm run dev:api
 ```
+
+### Tauri predictions fail
+
+The Tauri build is prerendered/static, so it cannot use SvelteKit `+server.ts` API routes.
+
+Instead, the desktop shell starts (or expects) a local FastAPI backend and the UI calls it over `127.0.0.1`.
+
+- Start the Python API (`pnpm run dev:api`) before launching the Tauri app (recommended for dev), or
+- Bundle the FastAPI sidecar binary so Tauri can launch it automatically (macOS + Windows), or
+- Override the URL at build time via `VITE_ANOMALIZE_PYTHON_API_URL`.
+
+#### Bundle the FastAPI sidecar (macOS + Windows)
+
+Tauri is configured to bundle an external binary named `anomalize-api` and will look for a platform-specific file in `src-tauri/bin/`:
+
+- macOS (Apple Silicon): `src-tauri/bin/anomalize-api-aarch64-apple-darwin`
+- macOS (Intel): `src-tauri/bin/anomalize-api-x86_64-apple-darwin`
+- Windows: `src-tauri/bin/anomalize-api-x86_64-pc-windows-msvc.exe` (or whichever target triple you build)
+
+One straightforward approach is PyInstaller:
+
+```bash
+source .venv/bin/activate
+pip install pyinstaller
+pyinstaller --onefile src-python/sidecar_entry.py --name anomalize-api
+```
+
+Then rename/copy the resulting `dist/anomalize-api` (or `dist/anomalize-api.exe`) into `src-tauri/bin/` with the correct target-triple suffix above, and build the app with Tauri.

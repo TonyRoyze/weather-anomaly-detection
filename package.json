@@ -5,12 +5,17 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:tauri": "VITE_TAURI_BUILD=1 vite dev",
 		"dev:api": "uvicorn main:app --reload --app-dir src-python",
 		"build": "vite build",
+		"build:tauri": "TAURI_BUILD=1 VITE_TAURI_BUILD=1 vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"dependencies": {
+		"@tauri-apps/api": "^2.0.0"
 	},
 	"devDependencies": {
 		"@fontsource-variable/dm-sans": "^5.2.8",
@@ -19,6 +24,7 @@
 		"@internationalized/date": "^3.12.0",
 		"@lucide/svelte": "^0.577.0",
 		"@sveltejs/adapter-auto": "^7.0.0",
+		"@sveltejs/adapter-static": "^3.0.0",
 		"@sveltejs/kit": "latest",
 		"@sveltejs/vite-plugin-svelte": "latest",
 		"@tailwindcss/vite": "^4.1.18",
