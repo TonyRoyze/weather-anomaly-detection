@@ -165,7 +165,3 @@ Make sure the FastAPI server is running in a separate terminal with:
 ```bash
 pnpm run dev:api
 ```
-
-## Tauri
-
-This repository includes a Tauri shell under `src-tauri/`, but the README above documents the currently reliable local workflow based on the frontend and Python API scripts already present in `package.json`.

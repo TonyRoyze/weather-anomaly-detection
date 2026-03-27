@@ -23,10 +23,6 @@ __pycache__/
 # Demo outputs
 /src-python/demo-output/
 
-# Legacy (no longer used)
-/src-python/models/
-src-python/models/
-
 # Env
 .env
 .env.*

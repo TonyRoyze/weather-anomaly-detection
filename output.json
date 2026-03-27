@@ -1,0 +1,935 @@
+{
+  "threshold": 0.55,
+  "items": [
+    {
+      "city": "Colombo",
+      "date": "2010-10-02",
+      "probability": 1.0,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 6.01
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.35
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.11
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.7,
+        "precipitationSum": 69.3,
+        "precipitationHours": 23.0,
+        "windSpeedMax": 16.0,
+        "windDirectionDominant": 282.0,
+        "shortwaveRadiationSum": 4.32,
+        "et0FaoEvapotranspiration": 1.0
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2013-01-07",
+      "probability": 1.0,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 5.35
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.76
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 3.15
+        }
+      ],
+      "features": {
+        "temperatureMean": 23.7,
+        "precipitationSum": 62.5,
+        "precipitationHours": 21.0,
+        "windSpeedMax": 15.9,
+        "windDirectionDominant": 357.0,
+        "shortwaveRadiationSum": 2.66,
+        "et0FaoEvapotranspiration": 0.81
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2014-12-25",
+      "probability": 1.0,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 7.46
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.99
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.94
+        }
+      ],
+      "features": {
+        "temperatureMean": 23.9,
+        "precipitationSum": 84.3,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 19.5,
+        "windDirectionDominant": 347.0,
+        "shortwaveRadiationSum": 1.76,
+        "et0FaoEvapotranspiration": 0.64
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2011-01-13",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Temperature Anomaly",
+      "dominantSignal": "Temperature",
+      "signals": [
+        {
+          "metric": "Temperature",
+          "zScore": 5.77
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.6
+        },
+        {
+          "metric": "Wind",
+          "zScore": 2.67
+        }
+      ],
+      "features": {
+        "temperatureMean": 21.2,
+        "precipitationSum": 25.4,
+        "precipitationHours": 14.0,
+        "windSpeedMax": 25.8,
+        "windDirectionDominant": 16.0,
+        "shortwaveRadiationSum": 3.31,
+        "et0FaoEvapotranspiration": 1.15
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2016-05-14",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 6.57
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.66
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.54
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.2,
+        "precipitationSum": 75.1,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 13.8,
+        "windDirectionDominant": 319.0,
+        "shortwaveRadiationSum": 3.09,
+        "et0FaoEvapotranspiration": 0.86
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2016-05-15",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 18.53
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.91
+        },
+        {
+          "metric": "Wind",
+          "zScore": 2.79
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.0,
+        "precipitationSum": 198.7,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 26.3,
+        "windDirectionDominant": 288.0,
+        "shortwaveRadiationSum": 2.06,
+        "et0FaoEvapotranspiration": 1.02
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2017-11-30",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 5.69
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.35
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.11
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.7,
+        "precipitationSum": 66.0,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 20.7,
+        "windDirectionDominant": 164.0,
+        "shortwaveRadiationSum": 4.32,
+        "et0FaoEvapotranspiration": 1.05
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2017-12-01",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 3.79
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.78
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.32
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.5,
+        "precipitationSum": 46.4,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 14.3,
+        "windDirectionDominant": 173.0,
+        "shortwaveRadiationSum": 2.61,
+        "et0FaoEvapotranspiration": 0.72
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2022-05-14",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 6.25
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.78
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.95
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.7,
+        "precipitationSum": 71.8,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 22.7,
+        "windDirectionDominant": 210.0,
+        "shortwaveRadiationSum": 2.58,
+        "et0FaoEvapotranspiration": 0.96
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2022-12-19",
+      "probability": 0.9999,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 3.46
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.43
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 3.05
+        }
+      ],
+      "features": {
+        "temperatureMean": 23.8,
+        "precipitationSum": 42.9,
+        "precipitationHours": 20.0,
+        "windSpeedMax": 16.7,
+        "windDirectionDominant": 10.0,
+        "shortwaveRadiationSum": 3.99,
+        "et0FaoEvapotranspiration": 0.99
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2010-12-24",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Temperature Anomaly",
+      "dominantSignal": "Temperature",
+      "signals": [
+        {
+          "metric": "Temperature",
+          "zScore": 3.99
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.37
+        },
+        {
+          "metric": "Rainfall",
+          "zScore": 2.51
+        }
+      ],
+      "features": {
+        "temperatureMean": 22.9,
+        "precipitationSum": 33.1,
+        "precipitationHours": 21.0,
+        "windSpeedMax": 15.9,
+        "windDirectionDominant": 354.0,
+        "shortwaveRadiationSum": 4.24,
+        "et0FaoEvapotranspiration": 1.13
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2011-12-20",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 3.52
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.41
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.11
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.7,
+        "precipitationSum": 43.6,
+        "precipitationHours": 13.0,
+        "windSpeedMax": 12.7,
+        "windDirectionDominant": 12.0,
+        "shortwaveRadiationSum": 4.09,
+        "et0FaoEvapotranspiration": 1.14
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2012-02-14",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 5.59
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.28
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.75
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.0,
+        "precipitationSum": 65.0,
+        "precipitationHours": 15.0,
+        "windSpeedMax": 8.8,
+        "windDirectionDominant": 204.0,
+        "shortwaveRadiationSum": 17.56,
+        "et0FaoEvapotranspiration": 3.7
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2014-10-15",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 13.72
+        },
+        {
+          "metric": "Wind",
+          "zScore": 0.73
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.23
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.5,
+        "precipitationSum": 149.0,
+        "precipitationHours": 17.0,
+        "windSpeedMax": 11.2,
+        "windDirectionDominant": 296.0,
+        "shortwaveRadiationSum": 18.62,
+        "et0FaoEvapotranspiration": 3.82
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2014-12-23",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Radiation Anomaly",
+      "dominantSignal": "Radiation",
+      "signals": [
+        {
+          "metric": "Radiation",
+          "zScore": 3.81
+        },
+        {
+          "metric": "Rainfall",
+          "zScore": 3.78
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.94
+        }
+      ],
+      "features": {
+        "temperatureMean": 23.9,
+        "precipitationSum": 46.3,
+        "precipitationHours": 22.0,
+        "windSpeedMax": 14.3,
+        "windDirectionDominant": 5.0,
+        "shortwaveRadiationSum": 2.49,
+        "et0FaoEvapotranspiration": 0.69
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2015-10-16",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 10.46
+        },
+        {
+          "metric": "Wind",
+          "zScore": 0.89
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 0.54
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.5,
+        "precipitationSum": 115.3,
+        "precipitationHours": 17.0,
+        "windSpeedMax": 10.5,
+        "windDirectionDominant": 212.0,
+        "shortwaveRadiationSum": 19.97,
+        "et0FaoEvapotranspiration": 4.07
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2017-01-27",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 3.46
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.28
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.0
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.8,
+        "precipitationSum": 42.9,
+        "precipitationHours": 19.0,
+        "windSpeedMax": 11.5,
+        "windDirectionDominant": 131.0,
+        "shortwaveRadiationSum": 4.61,
+        "et0FaoEvapotranspiration": 1.02
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2017-11-29",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Wind Anomaly",
+      "dominantSignal": "Wind",
+      "signals": [
+        {
+          "metric": "Wind",
+          "zScore": 5.84
+        },
+        {
+          "metric": "Rainfall",
+          "zScore": 5.18
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 3.13
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.3,
+        "precipitationSum": 60.7,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 39.4,
+        "windDirectionDominant": 115.0,
+        "shortwaveRadiationSum": 5.23,
+        "et0FaoEvapotranspiration": 1.46
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2018-10-24",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 6.79
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.05
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.85
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.9,
+        "precipitationSum": 77.4,
+        "precipitationHours": 16.0,
+        "windSpeedMax": 9.8,
+        "windDirectionDominant": 218.0,
+        "shortwaveRadiationSum": 17.29,
+        "et0FaoEvapotranspiration": 3.49
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2019-10-13",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 4.6
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.08
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 0.68
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.3,
+        "precipitationSum": 54.7,
+        "precipitationHours": 16.0,
+        "windSpeedMax": 9.7,
+        "windDirectionDominant": 283.0,
+        "shortwaveRadiationSum": 20.54,
+        "et0FaoEvapotranspiration": 4.13
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2019-12-22",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 5.31
+        },
+        {
+          "metric": "Wind",
+          "zScore": 0.61
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.54
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.2,
+        "precipitationSum": 62.1,
+        "precipitationHours": 18.0,
+        "windSpeedMax": 11.7,
+        "windDirectionDominant": 19.0,
+        "shortwaveRadiationSum": 16.68,
+        "et0FaoEvapotranspiration": 3.42
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2020-11-20",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 6.39
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.17
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.75
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.0,
+        "precipitationSum": 73.2,
+        "precipitationHours": 18.0,
+        "windSpeedMax": 9.3,
+        "windDirectionDominant": 204.0,
+        "shortwaveRadiationSum": 18.34,
+        "et0FaoEvapotranspiration": 3.7
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2021-05-03",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 4.34
+        },
+        {
+          "metric": "Wind",
+          "zScore": 0.96
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 0.24
+        }
+      ],
+      "features": {
+        "temperatureMean": 26.8,
+        "precipitationSum": 52.0,
+        "precipitationHours": 19.0,
+        "windSpeedMax": 10.2,
+        "windDirectionDominant": 218.0,
+        "shortwaveRadiationSum": 18.79,
+        "et0FaoEvapotranspiration": 3.81
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2022-05-31",
+      "probability": 0.9998,
+      "severity": "high",
+      "categoryLabel": "Radiation Anomaly",
+      "dominantSignal": "Radiation",
+      "signals": [
+        {
+          "metric": "Radiation",
+          "zScore": 3.39
+        },
+        {
+          "metric": "Rainfall",
+          "zScore": 3.24
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 1.27
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.5,
+        "precipitationSum": 40.7,
+        "precipitationHours": 24.0,
+        "windSpeedMax": 16.1,
+        "windDirectionDominant": 265.0,
+        "shortwaveRadiationSum": 4.17,
+        "et0FaoEvapotranspiration": 1.02
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2010-11-10",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 4.09
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 1.58
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 0.68
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.2,
+        "precipitationSum": 49.5,
+        "precipitationHours": 19.0,
+        "windSpeedMax": 12.6,
+        "windDirectionDominant": 296.0,
+        "shortwaveRadiationSum": 15.07,
+        "et0FaoEvapotranspiration": 2.92
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2010-11-22",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 5.66
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 1.38
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.35
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.4,
+        "precipitationSum": 65.7,
+        "precipitationHours": 17.0,
+        "windSpeedMax": 8.5,
+        "windDirectionDominant": 115.0,
+        "shortwaveRadiationSum": 15.76,
+        "et0FaoEvapotranspiration": 3.21
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2010-12-08",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 3.95
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 1.58
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 1.0
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.2,
+        "precipitationSum": 48.0,
+        "precipitationHours": 21.0,
+        "windSpeedMax": 13.5,
+        "windDirectionDominant": 207.0,
+        "shortwaveRadiationSum": 13.78,
+        "et0FaoEvapotranspiration": 2.66
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2011-01-09",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Radiation Anomaly",
+      "dominantSignal": "Radiation",
+      "signals": [
+        {
+          "metric": "Radiation",
+          "zScore": 3.45
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 2.42
+        },
+        {
+          "metric": "Rainfall",
+          "zScore": 1.42
+        }
+      ],
+      "features": {
+        "temperatureMean": 24.4,
+        "precipitationSum": 21.9,
+        "precipitationHours": 16.0,
+        "windSpeedMax": 16.9,
+        "windDirectionDominant": 337.0,
+        "shortwaveRadiationSum": 3.93,
+        "et0FaoEvapotranspiration": 1.0
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2011-02-04",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Wind Anomaly",
+      "dominantSignal": "Wind",
+      "signals": [
+        {
+          "metric": "Wind",
+          "zScore": 3.95
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 3.57
+        },
+        {
+          "metric": "Radiation",
+          "zScore": 2.13
+        }
+      ],
+      "features": {
+        "temperatureMean": 23.3,
+        "precipitationSum": 0.2,
+        "precipitationHours": 2.0,
+        "windSpeedMax": 31.3,
+        "windDirectionDominant": 360.0,
+        "shortwaveRadiationSum": 9.22,
+        "et0FaoEvapotranspiration": 2.06
+      }
+    },
+    {
+      "city": "Colombo",
+      "date": "2011-10-21",
+      "probability": 0.9997,
+      "severity": "high",
+      "categoryLabel": "Rainfall Anomaly",
+      "dominantSignal": "Rainfall",
+      "signals": [
+        {
+          "metric": "Rainfall",
+          "zScore": 4.64
+        },
+        {
+          "metric": "Wind",
+          "zScore": 1.01
+        },
+        {
+          "metric": "Temperature",
+          "zScore": 0.85
+        }
+      ],
+      "features": {
+        "temperatureMean": 25.9,
+        "precipitationSum": 55.1,
+        "precipitationHours": 20.0,
+        "windSpeedMax": 10.0,
+        "windDirectionDominant": 158.0,
+        "shortwaveRadiationSum": 17.7,
+        "et0FaoEvapotranspiration": 3.6
+      }
+    }
+  ]
+}

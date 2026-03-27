@@ -27,6 +27,21 @@
 	let predictionLoading = $state(false);
 	let error = $state("");
 	let predictionError = $state("");
+	let predictionModes = $state<
+		Array<{ value: string; label: string; description: string }>
+	>([
+		{
+			value: "conservative",
+			label: "Conservative",
+			description: "XGBoost with fewer false alarms",
+		},
+		{
+			value: "sensitive",
+			label: "Sensitive",
+			description: "Balanced Random Forest with higher anomaly recall",
+		},
+	]);
+	let selectedMode = $state("conservative");
 	let selectedMetric = $state<
 		"temperature" | "precipitationProbability" | "humidity" | "windSpeed"
 	>("temperature");
@@ -198,6 +213,7 @@
 						longitude: city.longitude.toString(),
 						label: city.label,
 						date,
+						mode: selectedMode,
 					});
 					const response = await fetch(
 						`/api/weather/predict?${params.toString()}`,
@@ -249,6 +265,7 @@
 			const metadata = payload as PredictionMetadata;
 			cities = metadata.cities.length > 0 ? metadata.cities : [fallbackCity];
 			selectedCity = metadata.defaultCity ?? cities[0] ?? fallbackCity;
+			predictionModes = metadata.modes;
 		} catch (err) {
 			console.error(err);
 			cities = [fallbackCity];
@@ -298,6 +315,16 @@
 	async function handleCityChange(nextCityId: string) {
 		const nextCity = findCityById(nextCityId);
 		await loadWeather(nextCity);
+	}
+
+	async function handleModeChange(nextMode: string) {
+		selectedMode = nextMode;
+		if (weather) {
+			await loadDailyPredictions(
+				selectedCity,
+				weather.daily.map((day) => day.date).slice(0, 5),
+			);
+		}
 	}
 
 	onMount(() => {
@@ -355,6 +382,29 @@
 					itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
 					onValueChange={handleCityChange}
 				/>
+				<div
+					class="mt-4 text-sm font-medium text-(--theme-text)"
+					id="forecast-mode-label"
+				>
+					Binary mode
+				</div>
+				<SearchableSelect
+					triggerId="forecast-mode"
+					triggerTestId="forecast-mode"
+					labelledBy="forecast-mode-label"
+					items={predictionModes}
+					value={selectedMode}
+					placeholder="Search mode..."
+					emptyMessage="No matching modes found."
+					inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white/90 px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
+					contentClass="border border-(--theme-border) bg-white"
+					itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
+					onValueChange={handleModeChange}
+				/>
+				<div class="mt-3 text-sm text-(--theme-muted)">
+					{predictionModes.find((mode) => mode.value === selectedMode)
+						?.description}
+				</div>
 			</div>
 		</div>
 	</section>
@@ -394,7 +444,7 @@
 					<div
 						class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)"
 					>
-						Forecast scoring
+						Model forecast
 					</div>
 					<h2
 						class="mt-2 text-2xl font-semibold text-(--theme-text)"
@@ -408,7 +458,11 @@
 						Scoring the 5-day forecast...
 					</div>
 				{:else}
-					<div class="text-sm text-(--theme-muted)">Using a single scoring mode</div>
+					<div class="text-sm text-(--theme-muted)">
+						{selectedMode === "sensitive"
+							? "Sensitive mode"
+							: "Conservative mode"}
+					</div>
 				{/if}
 			</div>
 
@@ -442,7 +496,7 @@
 						</div>
 						<div class="mt-3 text-sm text-(--theme-text)">
 							{forecastPrediction?.anomalyPrediction.isAnomaly
-								? "Anomaly"
+								? "Anomaly likely"
 								: "Normal pattern"}
 						</div>
 						{#if forecastPrediction}
