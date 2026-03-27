@@ -6,7 +6,7 @@ It is responsible for:
 
 - weather and forecast API responses
 - prediction metadata for supported cities and date ranges
-- anomaly scoring and category prediction
+- anomaly scoring and category prediction (lightweight runtime)
 
 ## Important Files
 
@@ -14,6 +14,8 @@ It is responsible for:
 - `api/endpoints.py` defines the HTTP routes
 - `api/services/open_meteo.py` contains the Open-Meteo integration
 - `requirements.txt` lists the Python dependencies
+- `requirements-dev.txt` contains the heavier ML stack for local experimentation only
+- `models-lite/` contains the lightweight, deployable XGBoost artifacts
 
 ## Run Locally
 
@@ -73,4 +75,4 @@ pnpm run dev
 
 - Auto-reload is enabled in local development.
 - The API serves the dashboard and forecast pages used by the SvelteKit frontend.
-- Some routes depend on the historical Sri Lanka weather dataset included in the main app workspace.
+- For Vercel deployments, the backend runs inference with only `xgboost` + `numpy` using artifacts in `src-python/models-lite`.

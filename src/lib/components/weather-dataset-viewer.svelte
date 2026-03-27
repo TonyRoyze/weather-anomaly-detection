@@ -2,7 +2,7 @@
 	import Input from "$lib/components/ui/input/input.svelte";
 	import SearchableSelect from "$lib/components/searchable-select.svelte";
 	import { weatherCodeLabel } from "$lib/weather-utils";
-	import datasetRaw from "../../SriLanka_Weather_Dataset_V1.csv?raw";
+	import datasetRaw from "../../../src-python/data/SriLanka_Weather_Dataset_V1.csv?raw";
 
 	type DatasetRow = {
 		date: string;

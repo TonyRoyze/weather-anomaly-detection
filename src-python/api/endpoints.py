@@ -1,11 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 
 from api.services.open_meteo import get_weather_overview
-from api.services.prediction import (
-    export_model_artifacts,
-    get_prediction_metadata,
-    get_weather_prediction,
-)
+from api.services.prediction import get_prediction_metadata, get_weather_prediction
 
 router = APIRouter(prefix="/api/weather", tags=["weather"])
 
@@ -28,7 +24,7 @@ async def prediction(
     longitude: float = Query(79.8612),
     label: str = Query("Colombo"),
     date: str = Query(..., description="Prediction date in YYYY-MM-DD format"),
-    mode: str = Query("conservative", description="Prediction mode: conservative or sensitive"),
+    mode: str = Query("conservative", description="Prediction mode (only conservative is supported)"),
 ):
     try:
         return await get_weather_prediction(
@@ -54,7 +50,7 @@ async def prediction_metadata():
 
 @router.post("/prediction-models/export")
 async def export_prediction_models():
-    try:
-        return export_model_artifacts()
-    except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=502, detail="Prediction model export failed") from exc
+    raise HTTPException(
+        status_code=501,
+        detail="Model export is not supported in the lightweight Vercel runtime.",
+    )

@@ -83,13 +83,6 @@ export interface WeatherPrediction {
 	selectedDate: string;
 	predictionSource: string;
 	supportedCities: string[];
-	modelSummary: {
-		mode: string;
-		anomalyModel: string;
-		anomalyModelMetric: string;
-		categoryModel: string;
-		categoryModelMetric: string;
-	};
 	anomalyPrediction: {
 		isAnomaly: boolean;
 		probability: number;

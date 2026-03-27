@@ -28,21 +28,6 @@
 	let error = $state("");
 	let predictionError = $state("");
 	let selectedDate = $state("");
-	let predictionModes = $state<
-		Array<{ value: string; label: string; description: string }>
-	>([
-		{
-			value: "conservative",
-			label: "Conservative",
-			description: "XGBoost with fewer false alarms",
-		},
-		{
-			value: "sensitive",
-			label: "Sensitive",
-			description: "Balanced Random Forest with higher anomaly recall",
-		},
-	]);
-	let selectedMode = $state("conservative");
 	let datasetDateRange = $state({ min: "", max: "" });
 
 	const cityItems = $derived.by(() =>
@@ -99,7 +84,6 @@
 			const metadata = payload as PredictionMetadata;
 			cities = metadata.cities.length > 0 ? metadata.cities : [fallbackCity];
 			selectedCity = metadata.defaultCity ?? cities[0] ?? fallbackCity;
-			predictionModes = metadata.modes;
 			datasetDateRange = metadata.datasetDateRange;
 			selectedDate = metadata.datasetDateRange.max;
 		} catch (err) {
@@ -127,7 +111,6 @@
 			longitude: city.longitude.toString(),
 			label: city.label,
 			date,
-			mode: selectedMode,
 		});
 
 		try {
@@ -202,13 +185,6 @@
 		await loadWeather(nextCity);
 	}
 
-	async function handleModeChange(nextMode: string) {
-		selectedMode = nextMode;
-		if (selectedDate) {
-			await loadPrediction(selectedCity, selectedDate);
-		}
-	}
-
 	onMount(() => {
 		void (async () => {
 			await loadPredictionMetadata();
@@ -254,13 +230,6 @@
 					<div class="text-(--theme-muted)">City</div>
 					<div class="font-semibold text-(--theme-text)">
 						{selectedCity.label}
-					</div>
-				</div>
-				<div class="flex items-center justify-between gap-4">
-					<div class="text-(--theme-muted)">Mode</div>
-					<div class="font-semibold text-(--theme-text)">
-						{predictionModes.find((mode) => mode.value === selectedMode)?.label ??
-							selectedMode}
 					</div>
 				</div>
 				{#if selectedDate}
@@ -312,7 +281,7 @@
 		<section
 			id="dashboard-summary"
 			data-testid="dashboard-summary"
-			class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+			class="grid gap-4 grid-cols-3"
 		>
 			<div
 				id="dashboard-summary-temperature"
@@ -330,7 +299,7 @@
 					Feels like {weather.current.apparentTemperature.toFixed(1)}°C
 				</div>
 			</div>
-			<div
+			<!-- <div
 				id="dashboard-summary-conditions"
 				data-testid="dashboard-summary-conditions"
 				class="rounded-[1.8rem] border border-(--theme-border) bg-white/85 p-5 shadow-(--theme-shadow)"
@@ -345,7 +314,7 @@
 				<div class="mt-2 text-sm text-(--theme-text)">
 					{weather.location.label} · {weather.location.timezone}
 				</div>
-			</div>
+			</div> -->
 			<div
 				id="dashboard-summary-wind"
 				data-testid="dashboard-summary-wind"
@@ -460,44 +429,6 @@
 						? "Live forecast"
 						: "Historical dataset"}
 				</div>
-
-				<div
-					class="mt-5 block text-sm font-medium text-(--theme-text)"
-					id="prediction-mode-label"
-				>
-					Prediction mode
-				</div>
-				<SearchableSelect
-					triggerId="prediction-mode"
-					triggerTestId="prediction-mode"
-					labelledBy="prediction-mode-label"
-					items={predictionModes}
-					value={selectedMode}
-					placeholder="Search mode..."
-					emptyMessage="No matching modes found."
-					inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
-					contentClass="border border-(--theme-border) bg-white"
-					itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
-					onValueChange={handleModeChange}
-				/>
-				<div class="mt-2 text-sm text-(--theme-muted)">
-					{predictionModes.find((mode) => mode.value === selectedMode)
-						?.description}
-				</div>
-
-				<div
-					id="dashboard-model-summary"
-					data-testid="dashboard-model-summary"
-					class="mt-5 rounded-3xl border border-(--theme-border) bg-white p-4 text-sm text-(--theme-text)"
-				>
-					<div class="font-semibold text-(--theme-text)">Models in use</div>
-					<div class="mt-2">
-						Binary anomaly prediction: {selectedMode === "sensitive"
-							? "Balanced Random Forest"
-							: "XGBoost"}
-					</div>
-					<div class="mt-1">Category prediction: XGBoost</div>
-				</div>
 			</div>
 
 			<div
@@ -538,7 +469,7 @@
 					<div
 						class="mt-5 rounded-3xl border border-(--theme-border) bg-(--theme-soft) px-5 py-4 text-sm text-(--theme-text)"
 					>
-						Scoring the selected date with the Python models...
+									Scoring the selected date...
 					</div>
 				{:else if prediction}
 					<div class="mt-5 grid gap-4 md:grid-cols-3">
@@ -551,7 +482,7 @@
 								style="font-family: Georgia, 'Times New Roman', serif;"
 							>
 								{prediction.anomalyPrediction.isAnomaly
-									? "Anomaly likely"
+									? "Anomaly"
 									: "Normal pattern"}
 							</div>
 							<div class="mt-2 text-sm text-(--theme-text)">
@@ -643,9 +574,7 @@
 							<div>
 								ET0: {prediction.features.et0FaoEvapotranspiration.toFixed(2)}
 							</div>
-							<!-- <div>
-								{prediction.modelSummary.anomalyModel} / {prediction.modelSummary.categoryModel}
-							</div> -->
+
 						</div>
 					</div>
 				{/if}

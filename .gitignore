@@ -12,6 +12,21 @@ node_modules
 .DS_Store
 Thumbs.db
 
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.python-version
+!/src-python/.python-version
+.pytest_cache/
+
+# Demo outputs
+/src-python/demo-output/
+
+# Legacy (no longer used)
+/src-python/models/
+src-python/models/
+
 # Env
 .env
 .env.*
