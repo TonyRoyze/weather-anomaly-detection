@@ -387,9 +387,7 @@
 							Get the desktop app when you want the dashboard close by all day.
 						</h2>
 						<p class="max-w-xl text-base leading-8 text-(--theme-text)">
-							The desktop build keeps the anomaly dashboard one click away. For
-							now the shell is scaffolded and the installers are staged as the
-							next release step.
+							The desktop build keeps the anomaly dashboard one click away.
 						</p>
 					</div>
 					<div class="grid gap-4 sm:grid-cols-2 sm:max-w-lg">

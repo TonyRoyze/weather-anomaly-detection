@@ -24,8 +24,31 @@ async function getTauriBackendBaseUrl() {
 			const { invoke } = await import('@tauri-apps/api/core');
 			const url = await invoke<string>('backend_base_url');
 			return url || pythonApiBaseUrl;
-		} catch {
-			return pythonApiBaseUrl;
+		} catch (error) {
+			const explicitOverride =
+				(import.meta.env.VITE_ANOMALIZE_PYTHON_API_URL as string | undefined) ?? '';
+			if (explicitOverride && explicitOverride !== defaultPythonBaseUrl) {
+				return explicitOverride;
+			}
+
+			if (typeof error === 'string') {
+				throw new Error(`Desktop backend did not start: ${error}`);
+			}
+
+			if (error && typeof error === 'object' && 'message' in error) {
+				const message = String((error as { message?: unknown }).message ?? 'unknown error');
+				throw new Error(`Desktop backend did not start: ${message}`);
+			}
+
+			if (error instanceof Error) {
+				throw new Error(`Desktop backend did not start: ${error.message}`);
+			}
+
+			try {
+				throw new Error(`Desktop backend did not start: ${JSON.stringify(error)}`);
+			} catch {
+				throw new Error('Desktop backend did not start: unknown error');
+			}
 		}
 	})();
 

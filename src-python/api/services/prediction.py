@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import os
+import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -28,7 +30,10 @@ DATASET_PATH = Path(__file__).resolve().parents[2] / "data" / DATASET_BASENAME
 LEGACY_DATASET_PATH = Path(__file__).resolve().parents[3] / "src" / DATASET_BASENAME
 HISTORICAL_DATASET_CACHE_PATH = Path("/tmp/SriLanka_Weather_Dataset_V1.csv")
 MODEL_ARTIFACTS_DIR = Path(__file__).resolve().parents[2] / "models"
-MODEL_ARTIFACT_PATH = MODEL_ARTIFACTS_DIR / "anomaly_prediction_bundle.joblib"
+MODEL_ARTIFACT_FILENAME = "anomaly_prediction_bundle.joblib"
+MODEL_ARTIFACT_PATH = MODEL_ARTIFACTS_DIR / MODEL_ARTIFACT_FILENAME
+DATASET_PATH_ENV = "ANOMALIZE_DATASET_PATH"
+MODEL_ARTIFACT_PATH_ENV = "ANOMALIZE_MODEL_ARTIFACT_PATH"
 
 TRAINING_DROP_COLUMNS = [
     "weathercode",
@@ -105,8 +110,70 @@ def _safe_std(value: float) -> float:
     return value if pd.notna(value) and value > 0 else 1.0
 
 
+def _resolve_dataset_path_from_env() -> Path | None:
+    dataset_path = os.getenv(DATASET_PATH_ENV)
+    if not dataset_path:
+        return None
+
+    path = Path(dataset_path)
+    return path if path.exists() else None
+
+def _bundled_resource_path(relative_path: str) -> Path | None:
+    """Return a path to a bundled PyInstaller resource if present."""
+
+    base = getattr(sys, "_MEIPASS", None)
+    if not base:
+        return None
+
+    candidate = Path(str(base)) / relative_path
+    return candidate if candidate.exists() else None
+
+
+def _artifact_candidate_paths() -> list[Path]:
+    candidates: list[Path] = []
+
+    env_path = os.getenv(MODEL_ARTIFACT_PATH_ENV)
+    if env_path:
+        candidates.append(Path(env_path))
+
+    candidates.append(MODEL_ARTIFACT_PATH)
+
+    bundled = _bundled_resource_path(f"models/{MODEL_ARTIFACT_FILENAME}")
+    if bundled is not None:
+        candidates.append(bundled)
+
+    return candidates
+
+
+def _writable_artifact_path() -> Path:
+    """Pick a writable destination for saving model artifacts.
+
+    When running as a bundled desktop sidecar (e.g. PyInstaller), the bundled
+    resources directory is typically read-only; fall back to a temp directory.
+    """
+
+    env_path = os.getenv(MODEL_ARTIFACT_PATH_ENV)
+    if env_path:
+        return Path(env_path)
+
+    repo_parent = MODEL_ARTIFACT_PATH.parent
+    try:
+        repo_parent.mkdir(parents=True, exist_ok=True)
+        test_path = repo_parent / ".anomalize_write_test"
+        test_path.write_text("ok", encoding="utf-8")
+        test_path.unlink(missing_ok=True)
+        return MODEL_ARTIFACT_PATH
+    except Exception:
+        pass
+
+    return Path(tempfile.gettempdir()) / "anomalize" / MODEL_ARTIFACT_FILENAME
+
+
 def _dataset_signature() -> dict[str, Any] | None:
-    dataset_path = DATASET_PATH if DATASET_PATH.exists() else LEGACY_DATASET_PATH
+    dataset_path = _resolve_dataset_path_from_env()
+    if dataset_path is None:
+        dataset_path = DATASET_PATH if DATASET_PATH.exists() else LEGACY_DATASET_PATH
+
     if not dataset_path.exists():
         return None
 
@@ -329,21 +396,25 @@ def _artifact_is_fresh(payload: dict[str, Any]) -> bool:
 
 
 def _save_bundle_to_disk(bundle: ModelBundle) -> None:
-    MODEL_ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
-    joblib.dump(_bundle_to_artifact_payload(bundle), MODEL_ARTIFACT_PATH)
+    model_artifact_path = _writable_artifact_path()
+    model_artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(_bundle_to_artifact_payload(bundle), model_artifact_path)
 
 
 def _load_bundle_from_disk() -> ModelBundle | None:
-    if not MODEL_ARTIFACT_PATH.exists():
-        return None
+    for model_artifact_path in _artifact_candidate_paths():
+        if not model_artifact_path.exists():
+            continue
 
-    try:
-        payload = joblib.load(MODEL_ARTIFACT_PATH)
-        if not isinstance(payload, dict):
-            return None
-        return _bundle_from_artifact_payload(payload)
-    except Exception:
-        return None
+        try:
+            payload = joblib.load(model_artifact_path)
+            if not isinstance(payload, dict):
+                continue
+            return _bundle_from_artifact_payload(payload)
+        except Exception:
+            continue
+
+    return None
 
 
 def get_model_bundle() -> ModelBundle:
@@ -362,13 +433,30 @@ def get_model_bundle() -> ModelBundle:
 
 def get_prediction_metadata() -> dict[str, Any]:
     bundle = get_model_bundle()
+    historical_catalog = _load_historical_city_catalog()
+
+    if historical_catalog is None:
+        city_catalog = bundle.city_catalog
+        dataset_min_date = bundle.dataset_min_date
+        dataset_max_date = bundle.dataset_max_date
+    else:
+        city_catalog, dataset_min_date, dataset_max_date = historical_catalog
+
+    default_city = city_catalog[0] if city_catalog else None
+    if bundle.city_catalog:
+        preferred_id = bundle.city_catalog[0]["id"]
+        default_city = next(
+            (city for city in city_catalog if city["id"] == preferred_id),
+            default_city,
+        )
+
     return {
-        "cities": bundle.city_catalog,
+        "cities": city_catalog,
         "datasetDateRange": {
-            "min": bundle.dataset_min_date,
-            "max": bundle.dataset_max_date,
+            "min": dataset_min_date,
+            "max": dataset_max_date,
         },
-        "defaultCity": bundle.city_catalog[0] if bundle.city_catalog else None,
+        "defaultCity": default_city,
         "modes": [
             {
                 "value": "conservative",
@@ -388,7 +476,7 @@ def export_model_artifacts() -> dict[str, str]:
     bundle = _train_models()
     _save_bundle_to_disk(bundle)
     artifact_manifest = {
-        "artifact_path": str(MODEL_ARTIFACT_PATH),
+        "artifact_path": str(_writable_artifact_path()),
         "dataset_signature": json.dumps(_dataset_signature(), sort_keys=True),
     }
     return artifact_manifest
@@ -426,8 +514,13 @@ def _resolve_historical_dataset_path() -> Path | None:
 
     Priority:
     1) Repo-local dataset CSV (best for local dev/training).
+    2) Explicit runtime dataset path via `ANOMALIZE_DATASET_PATH` (best for bundled desktop apps).
     2) Cached copy downloaded from `ANOMALIZE_DATASET_URL` into `/tmp` (serverless-friendly).
     """
+
+    runtime_dataset_path = _resolve_dataset_path_from_env()
+    if runtime_dataset_path is not None:
+        return runtime_dataset_path
 
     if DATASET_PATH.exists():
         return DATASET_PATH
@@ -476,6 +569,37 @@ def _find_dataset_record(label: str, selected_date: str) -> dict[str, Any] | Non
     record = match.iloc[0].to_dict()
     record["time"] = match.iloc[0]["time"].strftime("%Y-%m-%d")
     return record
+
+
+def _load_historical_city_catalog() -> tuple[list[dict[str, Any]], str, str] | None:
+    dataset_path = _resolve_historical_dataset_path()
+    if dataset_path is None:
+        return None
+
+    df = pd.read_csv(
+        dataset_path,
+        usecols=["time", "city", "latitude", "longitude", "elevation"],
+    ).dropna(subset=["city"])
+    if df.empty:
+        return None
+
+    df["time"] = pd.to_datetime(df["time"])
+    sorted_df = df.sort_values("time")
+
+    city_catalog = [
+        {
+            "id": str(city).lower().replace(" ", "-"),
+            "label": str(city),
+            "latitude": float(city_frame.iloc[0]["latitude"]),
+            "longitude": float(city_frame.iloc[0]["longitude"]),
+            "elevation": float(city_frame.iloc[0]["elevation"]),
+        }
+        for city, city_frame in sorted_df.groupby("city", sort=True)
+    ]
+
+    dataset_min_date = sorted_df["time"].min().strftime("%Y-%m-%d")
+    dataset_max_date = sorted_df["time"].max().strftime("%Y-%m-%d")
+    return city_catalog, dataset_min_date, dataset_max_date
 
 
 def _build_prediction_frame(
@@ -555,7 +679,7 @@ async def get_weather_prediction(
         source = "historical-dataset"
         dataset_record = _find_dataset_record(label=label, selected_date=selected_date)
         if dataset_record is None:
-            if not DATASET_PATH.exists() and not os.getenv("ANOMALIZE_DATASET_URL"):
+            if _resolve_historical_dataset_path() is None and not os.getenv("ANOMALIZE_DATASET_URL"):
                 raise ValueError(
                     "The selected date is outside the forecast window. This deployment is configured "
                     "without the historical CSV dataset. Set ANOMALIZE_DATASET_URL to enable "

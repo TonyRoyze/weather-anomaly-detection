@@ -31,12 +31,12 @@
 			icon: LayoutDashboardIcon,
 			description: "Date-based anomaly prediction workspace",
 		},
-		// {
-		// 	title: "Forecast",
-		// 	url: "/dashboard/forecast",
-		// 	icon: LineChartIcon,
-		// 	description: "Timeline, alerts, and daily outlook",
-		// },
+		{
+			title: "Forecast",
+			url: "/dashboard/forecast",
+			icon: LineChartIcon,
+			description: "Timeline, alerts, and daily outlook",
+		},
 	];
 
 	function isActive(url: string) {

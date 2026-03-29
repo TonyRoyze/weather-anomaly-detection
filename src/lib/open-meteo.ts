@@ -26,7 +26,8 @@ const dailyParams = [
 	'temperature_2m_max',
 	'temperature_2m_min',
 	'precipitation_sum',
-	'wind_speed_10m_max'
+	'wind_speed_10m_max',
+	'shortwave_radiation_sum'
 ];
 
 interface OpenMeteoResponse {
@@ -60,6 +61,7 @@ interface OpenMeteoResponse {
 		temperature_2m_min: number[];
 		precipitation_sum: number[];
 		wind_speed_10m_max: number[];
+		shortwave_radiation_sum: number[];
 	};
 }
 
@@ -217,7 +219,8 @@ export async function getWeatherOverview(
 			tempMax: data.daily.temperature_2m_max[index],
 			tempMin: data.daily.temperature_2m_min[index],
 			precipitationSum: data.daily.precipitation_sum[index],
-			windSpeedMax: data.daily.wind_speed_10m_max[index]
+			windSpeedMax: data.daily.wind_speed_10m_max[index],
+			shortwaveRadiationSum: data.daily.shortwave_radiation_sum[index]
 		})),
 		anomalies: buildAnomalies(hourly.slice(currentIndex, currentIndex + 48)),
 		source: {

@@ -22,7 +22,12 @@
 	"bundle": {
 		"active": true,
 		"targets": "all",
-		"externalBin": ["bin/anomalize-api"],
+		"resources": [
+			"../src-python/models/onnx/anomaly_xgb.onnx",
+			"../src-python/models/onnx/anomaly_brf.onnx",
+			"../src-python/models/onnx/category_xgb.onnx",
+			"../src-python/models/onnx/bundle_metadata.json"
+		],
 		"icon": [
 			"icons/32x32.png",
 			"icons/128x128.png",

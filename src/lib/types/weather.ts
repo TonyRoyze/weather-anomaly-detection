@@ -56,6 +56,7 @@ export interface WeatherOverview {
 		tempMin: number;
 		precipitationSum: number;
 		windSpeedMax: number;
+		shortwaveRadiationSum: number;
 	}>;
 	anomalies: Array<{
 		id: string;

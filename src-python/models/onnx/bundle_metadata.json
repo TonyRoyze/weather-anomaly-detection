@@ -1,0 +1,691 @@
+{
+  "anomaly_preprocessor": {
+    "numeric_features": [
+      "precipitation_hours",
+      "winddirection_10m_dominant",
+      "et0_fao_evapotranspiration",
+      "latitude",
+      "longitude",
+      "elevation"
+    ],
+    "scaler_mean": [
+      8.753890358014646,
+      182.9692839707079,
+      3.895868168565229,
+      7.123357476803635,
+      80.2633274024444,
+      111.72686974505018
+    ],
+    "scaler_scale": [
+      7.177047262666201,
+      93.54848710134377,
+      1.0216283216825326,
+      0.7986231880899018,
+      0.4888715435587041,
+      266.36424124924577
+    ],
+    "ohe_cities": [
+      "Athurugiriya",
+      "Badulla",
+      "Bentota",
+      "Colombo",
+      "Galle",
+      "Gampaha",
+      "Hambantota",
+      "Hatton",
+      "Jaffna",
+      "Kalmunai",
+      "Kalutara",
+      "Kandy",
+      "Kesbewa",
+      "Kolonnawa",
+      "Kurunegala",
+      "Mabole",
+      "Maharagama",
+      "Mannar",
+      "Matale",
+      "Matara",
+      "Moratuwa",
+      "Mount Lavinia",
+      "Negombo",
+      "Oruwala",
+      "Pothuhera",
+      "Puttalam",
+      "Ratnapura",
+      "Sri Jayewardenepura Kotte",
+      "Trincomalee",
+      "Weligama"
+    ]
+  },
+  "category_preprocessor": {
+    "numeric_features": [
+      "precipitation_hours",
+      "winddirection_10m_dominant",
+      "et0_fao_evapotranspiration",
+      "latitude",
+      "longitude",
+      "elevation"
+    ],
+    "scaler_mean": [
+      20.87372881355932,
+      172.38220338983052,
+      1.6039576271186442,
+      7.282204427711865,
+      80.39279978644068,
+      285.7677966101695
+    ],
+    "scaler_scale": [
+      3.815022224119502,
+      120.8119095118144,
+      0.9241527580646163,
+      0.8078046547308715,
+      0.5159288573209372,
+      442.96775371052513
+    ],
+    "ohe_cities": [
+      "Athurugiriya",
+      "Badulla",
+      "Bentota",
+      "Colombo",
+      "Galle",
+      "Gampaha",
+      "Hambantota",
+      "Hatton",
+      "Jaffna",
+      "Kalmunai",
+      "Kalutara",
+      "Kandy",
+      "Kesbewa",
+      "Kolonnawa",
+      "Kurunegala",
+      "Mabole",
+      "Maharagama",
+      "Mannar",
+      "Matale",
+      "Matara",
+      "Moratuwa",
+      "Mount Lavinia",
+      "Negombo",
+      "Oruwala",
+      "Pothuhera",
+      "Puttalam",
+      "Ratnapura",
+      "Sri Jayewardenepura Kotte",
+      "Trincomalee",
+      "Weligama"
+    ]
+  },
+  "category_encoder_classes": [
+    "Radiation Anomaly",
+    "Rainfall Anomaly",
+    "Temperature Anomaly",
+    "Wind Anomaly"
+  ],
+  "city_baselines": {
+    "Athurugiriya": {
+      "temperature_2m_mean_mean": 26.540300025425882,
+      "temperature_2m_mean_std": 0.9721297379247172,
+      "shortwave_radiation_sum_mean": 17.90534197813374,
+      "shortwave_radiation_sum_std": 4.07244007632266,
+      "precipitation_sum_mean": 6.750673785914061,
+      "precipitation_sum_std": 9.935490690348564,
+      "windspeed_10m_max_mean": 14.16511568777015,
+      "windspeed_10m_max_std": 4.162256346293308
+    },
+    "Badulla": {
+      "temperature_2m_mean_mean": 23.640071192473936,
+      "temperature_2m_mean_std": 1.787254580899032,
+      "shortwave_radiation_sum_mean": 18.929529621154334,
+      "shortwave_radiation_sum_std": 4.342870094608723,
+      "precipitation_sum_mean": 5.043173150266972,
+      "precipitation_sum_std": 10.179779055924431,
+      "windspeed_10m_max_mean": 10.960818713450292,
+      "windspeed_10m_max_std": 4.171319509531218
+    },
+    "Bentota": {
+      "temperature_2m_mean_mean": 26.48787185354691,
+      "temperature_2m_mean_std": 0.8067668237400668,
+      "shortwave_radiation_sum_mean": 17.826140350877196,
+      "shortwave_radiation_sum_std": 4.043608108324118,
+      "precipitation_sum_mean": 7.1226290363590135,
+      "precipitation_sum_std": 10.326075473951107,
+      "windspeed_10m_max_mean": 14.335011441647596,
+      "windspeed_10m_max_std": 4.2801497429525615
+    },
+    "Colombo": {
+      "temperature_2m_mean_mean": 26.719603356216627,
+      "temperature_2m_mean_std": 0.95714619338565,
+      "shortwave_radiation_sum_mean": 17.774708873633358,
+      "shortwave_radiation_sum_std": 4.032802503276405,
+      "precipitation_sum_mean": 7.379862700228833,
+      "precipitation_sum_std": 10.64479900997819,
+      "windspeed_10m_max_mean": 14.331782354436816,
+      "windspeed_10m_max_std": 4.3351090762956925
+    },
+    "Galle": {
+      "temperature_2m_mean_mean": 27.114721586575133,
+      "temperature_2m_mean_std": 0.8323320295167287,
+      "shortwave_radiation_sum_mean": 19.900185608949908,
+      "shortwave_radiation_sum_std": 3.8602388051628918,
+      "precipitation_sum_mean": 5.73857106534452,
+      "precipitation_sum_std": 8.210674929623389,
+      "windspeed_10m_max_mean": 17.59071955250445,
+      "windspeed_10m_max_std": 6.760208573347001
+    },
+    "Gampaha": {
+      "temperature_2m_mean_mean": 26.60373760488177,
+      "temperature_2m_mean_std": 1.0648641559861185,
+      "shortwave_radiation_sum_mean": 17.834355453852023,
+      "shortwave_radiation_sum_std": 4.064099494686985,
+      "precipitation_sum_mean": 6.8495296211543355,
+      "precipitation_sum_std": 10.54903306390529,
+      "windspeed_10m_max_mean": 14.220569539791509,
+      "windspeed_10m_max_std": 4.160358443877633
+    },
+    "Hambantota": {
+      "temperature_2m_mean_mean": 27.282858596134282,
+      "temperature_2m_mean_std": 1.0884426349000618,
+      "shortwave_radiation_sum_mean": 19.745798575788402,
+      "shortwave_radiation_sum_std": 3.9680495005208214,
+      "precipitation_sum_mean": 2.832527975584944,
+      "precipitation_sum_std": 6.8642862158862155,
+      "windspeed_10m_max_mean": 19.755442522889112,
+      "windspeed_10m_max_std": 7.302166221494247
+    },
+    "Hatton": {
+      "temperature_2m_mean_mean": 20.36622583926755,
+      "temperature_2m_mean_std": 0.748690842727427,
+      "shortwave_radiation_sum_mean": 18.433563072227876,
+      "shortwave_radiation_sum_std": 4.357985211176016,
+      "precipitation_sum_mean": 7.111927772126144,
+      "precipitation_sum_std": 10.931348531365732,
+      "windspeed_10m_max_mean": 10.21795523906409,
+      "windspeed_10m_max_std": 4.791168642683743
+    },
+    "Jaffna": {
+      "temperature_2m_mean_mean": 27.78405797101449,
+      "temperature_2m_mean_std": 1.4946539553630676,
+      "shortwave_radiation_sum_mean": 19.862822273073988,
+      "shortwave_radiation_sum_std": 4.605219363919507,
+      "precipitation_sum_mean": 3.325629290617849,
+      "precipitation_sum_std": 9.530216129391604,
+      "windspeed_10m_max_mean": 26.50335621662853,
+      "windspeed_10m_max_std": 7.528932253609122
+    },
+    "Kalmunai": {
+      "temperature_2m_mean_mean": 27.731451817950674,
+      "temperature_2m_mean_std": 1.6646311297394207,
+      "shortwave_radiation_sum_mean": 19.417648105771676,
+      "shortwave_radiation_sum_std": 4.567846144412922,
+      "precipitation_sum_mean": 4.207068395626749,
+      "precipitation_sum_std": 10.365977041998962,
+      "windspeed_10m_max_mean": 15.894787693872361,
+      "windspeed_10m_max_std": 4.305813665192707
+    },
+    "Kalutara": {
+      "temperature_2m_mean_mean": 26.51973550356053,
+      "temperature_2m_mean_std": 0.8232268820590225,
+      "shortwave_radiation_sum_mean": 17.87229399796541,
+      "shortwave_radiation_sum_std": 3.9834282040045013,
+      "precipitation_sum_mean": 7.207477110885046,
+      "precipitation_sum_std": 10.620085799054424,
+      "windspeed_10m_max_mean": 14.32146490335707,
+      "windspeed_10m_max_std": 4.274623503384809
+    },
+    "Kandy": {
+      "temperature_2m_mean_mean": 23.510017798118483,
+      "temperature_2m_mean_std": 1.1635120321338224,
+      "shortwave_radiation_sum_mean": 18.138733790999236,
+      "shortwave_radiation_sum_std": 4.186772869842818,
+      "precipitation_sum_mean": 6.241342486651411,
+      "precipitation_sum_std": 12.889123358241457,
+      "windspeed_10m_max_mean": 11.784820747520975,
+      "windspeed_10m_max_std": 4.423510772920673
+    },
+    "Kesbewa": {
+      "temperature_2m_mean_mean": 26.60564454614798,
+      "temperature_2m_mean_std": 0.9045373770604326,
+      "shortwave_radiation_sum_mean": 17.86878210017798,
+      "shortwave_radiation_sum_std": 3.9908367661639295,
+      "precipitation_sum_mean": 7.1355453852021355,
+      "precipitation_sum_std": 10.559827024346434,
+      "windspeed_10m_max_mean": 14.296999745741164,
+      "windspeed_10m_max_std": 4.314368474047795
+    },
+    "Kolonnawa": {
+      "temperature_2m_mean_mean": 26.650241545893717,
+      "temperature_2m_mean_std": 0.9653472367602762,
+      "shortwave_radiation_sum_mean": 17.92599033816425,
+      "shortwave_radiation_sum_std": 4.045276519967355,
+      "precipitation_sum_mean": 6.681820493262141,
+      "precipitation_sum_std": 9.823400578364321,
+      "windspeed_10m_max_mean": 14.221510297482837,
+      "windspeed_10m_max_std": 4.139837605388782
+    },
+    "Kurunegala": {
+      "temperature_2m_mean_mean": 25.780366225839266,
+      "temperature_2m_mean_std": 1.2365341097550986,
+      "shortwave_radiation_sum_mean": 18.136197863682604,
+      "shortwave_radiation_sum_std": 4.183745273358981,
+      "precipitation_sum_mean": 5.431129196337742,
+      "precipitation_sum_std": 11.12101731621881,
+      "windspeed_10m_max_mean": 14.822838250254323,
+      "windspeed_10m_max_std": 4.724679035994282
+    },
+    "Mabole": {
+      "temperature_2m_mean_mean": 26.714797864225783,
+      "temperature_2m_mean_std": 0.9663776429560036,
+      "shortwave_radiation_sum_mean": 17.85560894991101,
+      "shortwave_radiation_sum_std": 4.054589849422617,
+      "precipitation_sum_mean": 6.86231884057971,
+      "precipitation_sum_std": 10.046238416466723,
+      "windspeed_10m_max_mean": 14.272540045766592,
+      "windspeed_10m_max_std": 4.1574919298454605
+    },
+    "Maharagama": {
+      "temperature_2m_mean_mean": 26.547698957538778,
+      "temperature_2m_mean_std": 0.9132587949440488,
+      "shortwave_radiation_sum_mean": 17.777309941520468,
+      "shortwave_radiation_sum_std": 4.035930043643909,
+      "precipitation_sum_mean": 7.08835494533435,
+      "precipitation_sum_std": 9.902565594590211,
+      "windspeed_10m_max_mean": 14.394914823290108,
+      "windspeed_10m_max_std": 4.323197920349143
+    },
+    "Mannar": {
+      "temperature_2m_mean_mean": 27.460742435799645,
+      "temperature_2m_mean_std": 1.3955621633601665,
+      "shortwave_radiation_sum_mean": 19.30713704551233,
+      "shortwave_radiation_sum_std": 4.584923010697287,
+      "precipitation_sum_mean": 3.070556826849733,
+      "precipitation_sum_std": 7.799095639732733,
+      "windspeed_10m_max_mean": 24.24106280193237,
+      "windspeed_10m_max_std": 7.530069568090114
+    },
+    "Matale": {
+      "temperature_2m_mean_mean": 25.03765573353674,
+      "temperature_2m_mean_std": 1.2944215927910898,
+      "shortwave_radiation_sum_mean": 18.317302313755402,
+      "shortwave_radiation_sum_std": 4.2917188136893785,
+      "precipitation_sum_mean": 5.196669209255021,
+      "precipitation_sum_std": 11.590364881184867,
+      "windspeed_10m_max_mean": 14.747520976353929,
+      "windspeed_10m_max_std": 5.732818292706658
+    },
+    "Matara": {
+      "temperature_2m_mean_mean": 26.49150559511699,
+      "temperature_2m_mean_std": 0.7835591665005264,
+      "shortwave_radiation_sum_mean": 19.867690742624617,
+      "shortwave_radiation_sum_std": 3.8794364837142914,
+      "precipitation_sum_mean": 5.686113936927772,
+      "precipitation_sum_std": 8.1245635355591,
+      "windspeed_10m_max_mean": 17.607477110885046,
+      "windspeed_10m_max_std": 6.711635374132307
+    },
+    "Moratuwa": {
+      "temperature_2m_mean_mean": 26.646668362156664,
+      "temperature_2m_mean_std": 0.9132098693429348,
+      "shortwave_radiation_sum_mean": 17.79831383519837,
+      "shortwave_radiation_sum_std": 3.9987066823155453,
+      "precipitation_sum_mean": 7.1342065106815875,
+      "precipitation_sum_std": 10.356446938433134,
+      "windspeed_10m_max_mean": 14.329628687690743,
+      "windspeed_10m_max_std": 4.293772689832587
+    },
+    "Mount Lavinia": {
+      "temperature_2m_mean_mean": 26.688075260615307,
+      "temperature_2m_mean_std": 0.9704288374822773,
+      "shortwave_radiation_sum_mean": 17.83476735316552,
+      "shortwave_radiation_sum_std": 4.000864851574162,
+      "precipitation_sum_mean": 7.155580981439106,
+      "precipitation_sum_std": 10.448241004146915,
+      "windspeed_10m_max_mean": 14.300610221205188,
+      "windspeed_10m_max_std": 4.28880639085721
+    },
+    "Negombo": {
+      "temperature_2m_mean_mean": 26.84787693872362,
+      "temperature_2m_mean_std": 0.9694933145661133,
+      "shortwave_radiation_sum_mean": 17.87212814645309,
+      "shortwave_radiation_sum_std": 4.085483789511054,
+      "precipitation_sum_mean": 6.875870836511568,
+      "precipitation_sum_std": 10.802814854700607,
+      "windspeed_10m_max_mean": 14.237757437070938,
+      "windspeed_10m_max_std": 4.172603052181824
+    },
+    "Oruwala": {
+      "temperature_2m_mean_mean": 26.390999237223493,
+      "temperature_2m_mean_std": 0.9586917497597467,
+      "shortwave_radiation_sum_mean": 17.913356216628525,
+      "shortwave_radiation_sum_std": 4.035798263552668,
+      "precipitation_sum_mean": 6.743452834986016,
+      "precipitation_sum_std": 10.457476795742586,
+      "windspeed_10m_max_mean": 14.220061022120518,
+      "windspeed_10m_max_std": 4.155877671819985
+    },
+    "Pothuhera": {
+      "temperature_2m_mean_mean": 25.499796592931602,
+      "temperature_2m_mean_std": 1.2225500588138642,
+      "shortwave_radiation_sum_mean": 18.161957793033306,
+      "shortwave_radiation_sum_std": 4.12886751784395,
+      "precipitation_sum_mean": 5.396160691584032,
+      "precipitation_sum_std": 10.923498567903124,
+      "windspeed_10m_max_mean": 14.81807780320366,
+      "windspeed_10m_max_std": 4.731563370584353
+    },
+    "Puttalam": {
+      "temperature_2m_mean_mean": 27.07126875158912,
+      "temperature_2m_mean_std": 1.073967526723294,
+      "shortwave_radiation_sum_mean": 18.759877955758963,
+      "shortwave_radiation_sum_std": 4.019450545920859,
+      "precipitation_sum_mean": 4.246732773963895,
+      "precipitation_sum_std": 8.43654235010187,
+      "windspeed_10m_max_mean": 16.829875413170605,
+      "windspeed_10m_max_std": 4.9371801282984995
+    },
+    "Ratnapura": {
+      "temperature_2m_mean_mean": 25.147139588100686,
+      "temperature_2m_mean_std": 0.7958054328603342,
+      "shortwave_radiation_sum_mean": 17.9323646071701,
+      "shortwave_radiation_sum_std": 3.9042976688733915,
+      "precipitation_sum_mean": 7.758581235697941,
+      "precipitation_sum_std": 10.545822396143935,
+      "windspeed_10m_max_mean": 12.200025425883549,
+      "windspeed_10m_max_std": 4.7273072541610315
+    },
+    "Sri Jayewardenepura Kotte": {
+      "temperature_2m_mean_mean": 26.680167810831428,
+      "temperature_2m_mean_std": 0.9693461799549725,
+      "shortwave_radiation_sum_mean": 17.87543859649123,
+      "shortwave_radiation_sum_std": 4.05860850452295,
+      "precipitation_sum_mean": 6.7393084159674554,
+      "precipitation_sum_std": 10.480142086747483,
+      "windspeed_10m_max_mean": 14.239359267734555,
+      "windspeed_10m_max_std": 4.124771555231527
+    },
+    "Trincomalee": {
+      "temperature_2m_mean_mean": 27.641851004322398,
+      "temperature_2m_mean_std": 1.6705067825822344,
+      "shortwave_radiation_sum_mean": 19.793473175692853,
+      "shortwave_radiation_sum_std": 4.5543823081348895,
+      "precipitation_sum_mean": 3.905669972031528,
+      "precipitation_sum_std": 10.172064496650322,
+      "windspeed_10m_max_mean": 21.461912026442917,
+      "windspeed_10m_max_std": 6.303549324375309
+    },
+    "Weligama": {
+      "temperature_2m_mean_mean": 26.553292651919655,
+      "temperature_2m_mean_std": 0.7831987420974323,
+      "shortwave_radiation_sum_mean": 19.898680396643783,
+      "shortwave_radiation_sum_std": 3.83530558557002,
+      "precipitation_sum_mean": 5.685685227561658,
+      "precipitation_sum_std": 8.127617100668203,
+      "windspeed_10m_max_mean": 17.573506229341472,
+      "windspeed_10m_max_std": 6.712931056896335
+    }
+  },
+  "global_baseline": {
+    "temperature_2m_mean_mean": 26.225250881475453,
+    "shortwave_radiation_sum_mean": 18.484575281394086,
+    "precipitation_sum_mean": 5.953475047464063,
+    "windspeed_10m_max_mean": 15.563270443449959,
+    "temperature_2m_mean_std": 1.8428822493552284,
+    "shortwave_radiation_sum_std": 4.207793234213822,
+    "precipitation_sum_std": 10.19280844104841,
+    "windspeed_10m_max_std": 6.2096608306600904
+  },
+  "supported_cities": [
+    "Athurugiriya",
+    "Badulla",
+    "Bentota",
+    "Colombo",
+    "Galle",
+    "Gampaha",
+    "Hambantota",
+    "Hatton",
+    "Jaffna",
+    "Kalmunai",
+    "Kalutara",
+    "Kandy",
+    "Kesbewa",
+    "Kolonnawa",
+    "Kurunegala",
+    "Mabole",
+    "Maharagama",
+    "Mannar",
+    "Matale",
+    "Matara",
+    "Moratuwa",
+    "Mount Lavinia",
+    "Negombo",
+    "Oruwala",
+    "Pothuhera",
+    "Puttalam",
+    "Ratnapura",
+    "Sri Jayewardenepura Kotte",
+    "Trincomalee",
+    "Weligama"
+  ],
+  "city_catalog": [
+    {
+      "id": "athurugiriya",
+      "label": "Athurugiriya",
+      "latitude": 6.9000015,
+      "longitude": 79.899994,
+      "elevation": 27.0
+    },
+    {
+      "id": "badulla",
+      "label": "Badulla",
+      "latitude": 7.0999985,
+      "longitude": 81.100006,
+      "elevation": 652.0
+    },
+    {
+      "id": "bentota",
+      "label": "Bentota",
+      "latitude": 6.5,
+      "longitude": 80.0,
+      "elevation": 10.0
+    },
+    {
+      "id": "colombo",
+      "label": "Colombo",
+      "latitude": 7.0,
+      "longitude": 79.899994,
+      "elevation": 16.0
+    },
+    {
+      "id": "galle",
+      "label": "Galle",
+      "latitude": 6.0999985,
+      "longitude": 80.20001,
+      "elevation": 15.0
+    },
+    {
+      "id": "gampaha",
+      "label": "Gampaha",
+      "latitude": 7.0999985,
+      "longitude": 80.0,
+      "elevation": 15.0
+    },
+    {
+      "id": "hambantota",
+      "label": "Hambantota",
+      "latitude": 6.2000046,
+      "longitude": 81.20001,
+      "elevation": 12.0
+    },
+    {
+      "id": "hatton",
+      "label": "Hatton",
+      "latitude": 6.9000015,
+      "longitude": 80.600006,
+      "elevation": 1281.0
+    },
+    {
+      "id": "jaffna",
+      "label": "Jaffna",
+      "latitude": 9.700005,
+      "longitude": 80.0,
+      "elevation": 5.0
+    },
+    {
+      "id": "kalmunai",
+      "label": "Kalmunai",
+      "latitude": 7.4000015,
+      "longitude": 81.80002,
+      "elevation": 8.0
+    },
+    {
+      "id": "kalutara",
+      "label": "Kalutara",
+      "latitude": 6.5999985,
+      "longitude": 80.0,
+      "elevation": 0.0
+    },
+    {
+      "id": "kandy",
+      "label": "Kandy",
+      "latitude": 7.300003,
+      "longitude": 80.600006,
+      "elevation": 510.0
+    },
+    {
+      "id": "kesbewa",
+      "label": "Kesbewa",
+      "latitude": 6.800003,
+      "longitude": 79.899994,
+      "elevation": 18.0
+    },
+    {
+      "id": "kolonnawa",
+      "label": "Kolonnawa",
+      "latitude": 6.9000015,
+      "longitude": 79.899994,
+      "elevation": 13.0
+    },
+    {
+      "id": "kurunegala",
+      "label": "Kurunegala",
+      "latitude": 7.5,
+      "longitude": 80.399994,
+      "elevation": 124.0
+    },
+    {
+      "id": "mabole",
+      "label": "Mabole",
+      "latitude": 7.0,
+      "longitude": 79.899994,
+      "elevation": 16.0
+    },
+    {
+      "id": "maharagama",
+      "label": "Maharagama",
+      "latitude": 6.800003,
+      "longitude": 79.899994,
+      "elevation": 26.0
+    },
+    {
+      "id": "mannar",
+      "label": "Mannar",
+      "latitude": 8.900002,
+      "longitude": 80.0,
+      "elevation": 6.0
+    },
+    {
+      "id": "matale",
+      "label": "Matale",
+      "latitude": 7.5999985,
+      "longitude": 80.600006,
+      "elevation": 376.0
+    },
+    {
+      "id": "matara",
+      "label": "Matara",
+      "latitude": 6.0,
+      "longitude": 80.399994,
+      "elevation": 7.0
+    },
+    {
+      "id": "moratuwa",
+      "label": "Moratuwa",
+      "latitude": 6.800003,
+      "longitude": 79.899994,
+      "elevation": 9.0
+    },
+    {
+      "id": "mount-lavinia",
+      "label": "Mount Lavinia",
+      "latitude": 6.9000015,
+      "longitude": 79.899994,
+      "elevation": 10.0
+    },
+    {
+      "id": "negombo",
+      "label": "Negombo",
+      "latitude": 7.0999985,
+      "longitude": 79.899994,
+      "elevation": 5.0
+    },
+    {
+      "id": "oruwala",
+      "label": "Oruwala",
+      "latitude": 6.9000015,
+      "longitude": 80.0,
+      "elevation": 20.0
+    },
+    {
+      "id": "pothuhera",
+      "label": "Pothuhera",
+      "latitude": 7.4000015,
+      "longitude": 80.30002,
+      "elevation": 125.0
+    },
+    {
+      "id": "puttalam",
+      "label": "Puttalam",
+      "latitude": 8.0,
+      "longitude": 79.80002,
+      "elevation": 0.0
+    },
+    {
+      "id": "ratnapura",
+      "label": "Ratnapura",
+      "latitude": 6.800003,
+      "longitude": 80.30002,
+      "elevation": 27.0
+    },
+    {
+      "id": "sri-jayewardenepura-kotte",
+      "label": "Sri Jayewardenepura Kotte",
+      "latitude": 6.9000015,
+      "longitude": 79.899994,
+      "elevation": 7.0
+    },
+    {
+      "id": "trincomalee",
+      "label": "Trincomalee",
+      "latitude": 8.599998,
+      "longitude": 81.20001,
+      "elevation": 7.0
+    },
+    {
+      "id": "weligama",
+      "label": "Weligama",
+      "latitude": 6.0,
+      "longitude": 80.399994,
+      "elevation": 5.0
+    }
+  ],
+  "dataset_min_date": "2010-01-01",
+  "dataset_max_date": "2023-06-17",
+  "forecast_feature_columns": [
+    "precipitation_hours",
+    "winddirection_10m_dominant",
+    "et0_fao_evapotranspiration",
+    "latitude",
+    "longitude",
+    "elevation",
+    "city"
+  ]
+}

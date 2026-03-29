@@ -265,7 +265,7 @@
 				</h1>
 				<p class="max-w-2xl text-base leading-7 text-(--theme-text) md:text-lg">
 					Choose any city in the dataset and score past dates from the
-					historical rows or future dates from the available forecast window.
+					historical rows.
 				</p>
 			</div>
 		</div>
@@ -304,12 +304,12 @@
 					</div>
 				{/if}
 				<div class="mt-2 flex flex-col gap-2">
-					<!-- <a
+					<a
 						href="/dashboard/forecast"
 						class="inline-flex items-center justify-center rounded-full border border-(--theme-border) bg-white/80 px-4 py-2 text-sm font-semibold text-(--theme-text) transition hover:border-(--theme-accent) hover:bg-(--theme-soft)"
 					>
 						Open forecast operations
-					</a> -->
+					</a>
 					<a
 						href="/dashboard/dataset"
 						class="inline-flex items-center justify-center rounded-full border border-(--theme-border) bg-white/70 px-4 py-2 text-sm font-semibold text-(--theme-text) transition hover:border-(--theme-accent) hover:bg-(--theme-soft)"

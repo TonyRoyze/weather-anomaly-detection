@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import SearchableSelect from "$lib/components/searchable-select.svelte";
+	import LineChart from "$lib/components/line-chart.svelte";
 
 	import type {
 		LocationPreset,
@@ -48,7 +49,7 @@
 	]);
 	let selectedMode = $state("conservative");
 	let selectedMetric = $state<
-		"temperature" | "precipitationProbability" | "humidity" | "windSpeed"
+		"temperature" | "precipitationProbability" | "radiation" | "windSpeed"
 	>("temperature");
 
 	const cityItems = $derived.by(() =>
@@ -57,31 +58,31 @@
 			label: city.label,
 		})),
 	);
-	const timeline = $derived.by(() => weather?.hourly ?? []);
+	const timeline = $derived.by(() => weather?.daily.slice(1, 6) ?? []);
 	const metricConfigs = {
 		temperature: {
 			label: "Temperature",
 			unit: "°C",
 			color: "var(--theme-accent-strong)",
 			bandColor: "var(--theme-soft-45)",
-			getValue: (entry: WeatherOverview["hourly"][number]) => entry.temperature,
+			getValue: (entry: WeatherOverview["daily"][number]) => entry.tempMax,
 			minSpread: 1.2,
 		},
 		precipitationProbability: {
-			label: "Rain probability",
+			label: "Rain",
 			unit: "%",
 			color: "var(--theme-accent)",
 			bandColor: "var(--theme-soft-45)",
-			getValue: (entry: WeatherOverview["hourly"][number]) =>
-				entry.precipitationProbability,
+			getValue: (entry: WeatherOverview["daily"][number]) =>
+				entry.precipitationSum,
 			minSpread: 8,
 		},
-		humidity: {
-			label: "Humidity",
+		radiation: {
+			label: "Radiation",
 			unit: "%",
 			color: "var(--theme-accent)",
 			bandColor: "var(--theme-soft-55)",
-			getValue: (entry: WeatherOverview["hourly"][number]) => entry.humidity,
+			getValue: (entry: WeatherOverview["daily"][number]) => entry.shortwaveRadiationSum,
 			minSpread: 6,
 		},
 		windSpeed: {
@@ -89,7 +90,7 @@
 			unit: "km/h",
 			color: "var(--theme-accent-strong)",
 			bandColor: "var(--theme-soft-45)",
-			getValue: (entry: WeatherOverview["hourly"][number]) => entry.windSpeed,
+			getValue: (entry: WeatherOverview["daily"][number]) => entry.windSpeedMax,
 			minSpread: 2.5,
 		},
 	} as const;
@@ -121,6 +122,8 @@
 				bandPath: "",
 				yTicks: [] as number[],
 				xTicks: [] as Array<{ label: string; x: number }>,
+				domainMin: 0,
+				domainMax: 100,
 			};
 		}
 
@@ -130,12 +133,12 @@
 		const high = Math.max(...values.map((value) => value + spread));
 		const domainMin =
 			selectedMetric === "precipitationProbability" ||
-			selectedMetric === "humidity"
+			selectedMetric === "radiation"
 				? Math.max(0, Math.min(low, 0))
 				: low;
 		const domainMax =
 			selectedMetric === "precipitationProbability" ||
-			selectedMetric === "humidity"
+			selectedMetric === "radiation"
 				? Math.min(100, Math.max(high, 100))
 				: high;
 		const usableWidth = chartWidth - chartPadding.left - chartPadding.right;
@@ -182,15 +185,15 @@
 			.filter((_, index) => index % 6 === 0 || index === timeline.length - 1)
 			.map((entry) => {
 				const sourceIndex = timeline.findIndex(
-					(candidate) => candidate.time === entry.time,
+					(candidate) => candidate.date === entry.date,
 				);
 				return {
-					label: formatTime(entry.time, { hour: "numeric" }),
+					label: formatTime(entry.date, { day: "numeric", month: "short" }),
 					x: chartPadding.left + sourceIndex * xStep,
 				};
 			});
 
-		return { config, mean, band: spread, linePath, bandPath, yTicks, xTicks };
+		return { config, mean, band: spread, linePath, bandPath, yTicks, xTicks, domainMin, domainMax };
 	});
 
 	function formatTime(value: string, options: Intl.DateTimeFormatOptions) {
@@ -239,7 +242,8 @@
 		metadataLoading = true;
 
 		try {
-			const metadata = (await loadPredictionMetadataFromApi()) as PredictionMetadata;
+			const metadata =
+				(await loadPredictionMetadataFromApi()) as PredictionMetadata;
 			cities = metadata.cities.length > 0 ? metadata.cities : [fallbackCity];
 			selectedCity = metadata.defaultCity ?? cities[0] ?? fallbackCity;
 			predictionModes = metadata.modes;
@@ -267,7 +271,7 @@
 			weather = (await loadAppWeather(city)) as WeatherOverview;
 			await loadDailyPredictions(
 				city,
-				weather.daily.map((day) => day.date).slice(0, 5),
+				weather.daily.map((day) => day.date).slice(1, 6),
 			);
 		} catch (err) {
 			console.error(err);
@@ -288,7 +292,7 @@
 		if (weather) {
 			await loadDailyPredictions(
 				selectedCity,
-				weather.daily.map((day) => day.date).slice(0, 5),
+				weather.daily.map((day) => day.date).slice(1, 6),
 			);
 		}
 	}
@@ -304,84 +308,79 @@
 <div class="flex flex-col gap-8">
 	<section
 		id="forecast-overview"
-		data-testid="forecast-overview"
-		class="rounded-[2rem] border border-(--theme-border) bg-(--theme-soft-75) p-6 shadow-(--theme-shadow) md:p-8"
+		data-testid="dashboard-overview"
+		class="grid gap-6 rounded-[2rem] border border-(--theme-border) bg-white/80 p-6 shadow-[0_24px_60px_var(--theme-shadow)] md:grid-cols-[1.6fr_1fr] md:p-8"
 	>
-		<div class="grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
-			<div>
-				<div class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)">
-					Forecast operations
-				</div>
+		<div class="space-y-5">
+			<div
+				class="inline-flex rounded-full border border-(--theme-border) bg-(--theme-soft-70) px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-(--theme-accent)"
+			>
+				Forecast operations
+			</div>
+			<div class="space-y-3">
 				<h1
-					class="mt-2 text-3xl font-semibold text-(--theme-text) md:text-4xl"
+					class="max-w-3xl text-4xl font-semibold tracking-tight text-(--theme-text) md:text-5xl"
 					style="font-family: Georgia, 'Times New Roman', serif;"
 				>
 					Timeline, alerts, and daily outlook
 				</h1>
-				<p class="mt-3 max-w-2xl text-sm leading-6 text-(--theme-text)">
-					Use this page for the live operational view while the main dashboard
-					stays focused on date-based anomaly prediction. Choose any city from
-					the dataset to inspect its live forecast, alerts, and next-5-day
-					anomaly predictions.
+				<p class="max-w-2xl text-base leading-7 text-(--theme-text) md:text-lg">
+					Choose any city to view its live forecast, and next-5-day anomaly
+					predictions.
 				</p>
 			</div>
+		</div>
 
-			<div
-				class="w-full rounded-[1.8rem] border border-(--theme-border) bg-white/80 p-5 shadow-(--theme-shadow) lg:max-w-sm lg:justify-self-end"
-			>
-				<div
-					class="text-sm font-medium text-(--theme-text)"
-					id="forecast-city-label"
-				>
-					City
+		<div
+			class="hidden rounded-[1.8rem] border border-(--theme-border) bg-(--theme-soft-45) p-6 shadow-(--theme-shadow) md:block"
+		>
+			<div class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)">
+				Forecast snapshot
+			</div>
+			<div class="mt-4 grid gap-3 text-sm text-(--theme-text)">
+				<div class="flex items-center justify-between gap-4">
+					<div id="forcast-city-label" class="text-(--theme-muted)">City</div>
+					<div class="font-semibold text-(--theme-text)">
+						<SearchableSelect
+							triggerId="forecast-city"
+							triggerTestId="forecast-city"
+							labelledBy="forecast-city-label"
+							items={cityItems}
+							value={selectedCity.id}
+							placeholder="Search city..."
+							emptyMessage="No matching cities found."
+							inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white/90 px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
+							contentClass="border border-(--theme-border) bg-white"
+							itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
+							onValueChange={handleCityChange}
+						/>
+					</div>
 				</div>
-				<SearchableSelect
-					triggerId="forecast-city"
-					triggerTestId="forecast-city"
-					labelledBy="forecast-city-label"
-					items={cityItems}
-					value={selectedCity.id}
-					placeholder="Search city..."
-					emptyMessage="No matching cities found."
-					inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white/90 px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
-					contentClass="border border-(--theme-border) bg-white"
-					itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
-					onValueChange={handleCityChange}
-				/>
-				<div
-					class="mt-4 text-sm font-medium text-(--theme-text)"
-					id="forecast-mode-label"
-				>
-					Binary mode
+				<div class="flex items-center justify-between gap-4">
+					<div id="forecast-mode-label" class="text-(--theme-muted)">Mode</div>
+					<div class="font-semibold text-(--theme-text)">
+						<SearchableSelect
+							triggerId="forecast-mode"
+							triggerTestId="forecast-mode"
+							labelledBy="forecast-mode-label"
+							items={predictionModes}
+							value={selectedMode}
+							placeholder="Search mode..."
+							emptyMessage="No matching modes found."
+							inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white/90 px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
+							contentClass="border border-(--theme-border) bg-white"
+							itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
+							onValueChange={handleModeChange}
+						/>
+					</div>
 				</div>
-				<SearchableSelect
-					triggerId="forecast-mode"
-					triggerTestId="forecast-mode"
-					labelledBy="forecast-mode-label"
-					items={predictionModes}
-					value={selectedMode}
-					placeholder="Search mode..."
-					emptyMessage="No matching modes found."
-					inputClass="mt-2 h-auto rounded-2xl border border-(--theme-border) bg-white/90 px-4 py-3 text-sm text-(--theme-text) outline-none transition placeholder:text-(--theme-muted) focus:border-(--theme-accent) focus:ring-4 focus:ring-[var(--theme-soft-45)]"
-					contentClass="border border-(--theme-border) bg-white"
-					itemClass="text-(--theme-text) data-highlighted:bg-(--theme-soft) data-highlighted:text-(--theme-text)"
-					onValueChange={handleModeChange}
-				/>
-				<div class="mt-3 text-sm text-(--theme-muted)">
-					{predictionModes.find((mode) => mode.value === selectedMode)
-						?.description}
+				<div class="text-(--theme-muted)">
+						{predictionModes.find((mode) => mode.value === selectedMode)
+							?.description}
 				</div>
 			</div>
 		</div>
 	</section>
-
-	{#if error}
-		<div
-			class="rounded-3xl border border-(--theme-accent) bg-(--theme-soft) px-5 py-4 text-sm text-(--theme-text)"
-		>
-			{error}
-		</div>
-	{/if}
 
 	{#if loading}
 		<div
@@ -391,99 +390,7 @@
 		</div>
 	{/if}
 
-	{#if predictionError}
-		<div
-			class="rounded-3xl border border-(--theme-accent) bg-(--theme-soft) px-5 py-4 text-sm text-(--theme-text)"
-		>
-			{predictionError}
-		</div>
-	{/if}
-
 	{#if weather}
-		<section
-			id="forecast-model-predictions"
-			data-testid="forecast-model-predictions"
-			class="rounded-[2rem] border border-(--theme-border) bg-white/85 p-6 shadow-(--theme-shadow)"
-		>
-			<div class="flex flex-wrap items-end justify-between gap-3">
-				<div>
-					<div
-						class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)"
-					>
-						Model forecast
-					</div>
-					<h2
-						class="mt-2 text-2xl font-semibold text-(--theme-text)"
-						style="font-family: Georgia, 'Times New Roman', serif;"
-					>
-						Next 5 days anomaly predictions
-					</h2>
-				</div>
-				{#if predictionLoading}
-					<div class="text-sm text-(--theme-muted)">
-						Scoring the 5-day forecast...
-					</div>
-				{:else}
-					<div class="text-sm text-(--theme-muted)">
-						{selectedMode === "sensitive"
-							? "Sensitive mode"
-							: "Conservative mode"}
-					</div>
-				{/if}
-			</div>
-
-			<div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-				{#each weather.daily.slice(0, 5) as day}
-					{@const forecastPrediction = dailyPredictions[day.date]}
-					<div
-						class="rounded-[1.6rem] border border-(--theme-border) bg-(--theme-soft-45) p-5"
-					>
-						<div class="text-sm text-(--theme-muted)">
-							{formatTime(day.date, {
-								weekday: "short",
-								month: "short",
-								day: "numeric",
-							})}
-						</div>
-						<div class="mt-3 flex items-center justify-between gap-3">
-							<div
-								class="text-lg font-semibold text-(--theme-text)"
-								style="font-family: Georgia, 'Times New Roman', serif;"
-							>
-								{forecastPrediction?.categoryPrediction.label ?? "Scoring..."}
-							</div>
-							{#if forecastPrediction}
-								<div
-									class={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.18em] ${severityClasses(forecastPrediction.anomalyPrediction.severity)}`}
-								>
-									{forecastPrediction.anomalyPrediction.severity}
-								</div>
-							{/if}
-						</div>
-						<div class="mt-3 text-sm text-(--theme-text)">
-							{forecastPrediction?.anomalyPrediction.isAnomaly
-								? "Anomaly"
-								: "Normal pattern"}
-						</div>
-						{#if forecastPrediction}
-							<div class="mt-2 text-sm text-(--theme-text)">
-								Probability {(
-									forecastPrediction.anomalyPrediction.probability * 100
-								).toFixed(1)}%
-							</div>
-							<div class="mt-1 text-sm text-(--theme-text)">
-								Dominant: {forecastPrediction.categoryPrediction.dominantSignal}
-							</div>
-						{:else}
-							<div class="mt-2 text-sm text-(--theme-text)">
-								Waiting for model output...
-							</div>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</section>
-
 		<section
 			id="forecast-analysis-grid"
 			data-testid="forecast-analysis-grid"
@@ -505,7 +412,7 @@
 							class="mt-2 text-2xl font-semibold text-(--theme-text)"
 							style="font-family: Georgia, 'Times New Roman', serif;"
 						>
-							Forecast chart with confidence band
+							Forecast chart
 						</h2>
 					</div>
 					<div class="text-sm text-(--theme-muted)">
@@ -530,7 +437,7 @@
 								(selectedMetric = metric as
 									| "temperature"
 									| "precipitationProbability"
-									| "humidity"
+									| "radiation"
 									| "windSpeed")}
 						>
 							{config.label}
@@ -541,62 +448,27 @@
 				<div
 					class="mt-6 rounded-[1.6rem] border border-(--theme-border) bg-(--theme-soft-45) p-4"
 				>
-					<svg
-						viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-						class="h-80 w-full overflow-visible lg:h-88 xl:h-96"
-						role="img"
-						aria-label={`${chartData.config.label} forecast chart`}
-					>
-						{#each chartData.yTicks as tick}
-							{@const y =
-								chartPadding.top +
-								(chartHeight - chartPadding.top - chartPadding.bottom) *
-									(1 -
-										(tick - chartData.yTicks[chartData.yTicks.length - 1]) /
-											(chartData.yTicks[0] -
-												chartData.yTicks[chartData.yTicks.length - 1] || 1))}
-							<line
-								x1={chartPadding.left}
-								x2={chartWidth - chartPadding.right}
-								y1={y}
-								y2={y}
-								stroke="var(--theme-border)"
-								stroke-dasharray="4 6"
-							/>
-							<text
-								x={chartPadding.left}
-								y={y - 6}
-								fill="var(--theme-muted)"
-								font-size="11"
-							>
-								{tick.toFixed(0)}{chartData.config.unit}
-							</text>
-						{/each}
-
-						<path d={chartData.bandPath} fill={chartData.config.bandColor} />
-						<path
-							d={chartData.linePath}
-							fill="none"
-							stroke={chartData.config.color}
-							stroke-width="4"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+					<div class="h-80 w-full lg:h-88 xl:h-96">
+						<LineChart
+							data={timeline.map((entry) => ({
+								date: new Date(entry.date),
+								value: chartData.config.getValue(entry),
+							}))}
+							yVar="value"
+							yDomain={[chartData.domainMin, chartData.domainMax]}
+							config={{
+								desktop: {
+									label: chartData.config.label,
+									color: chartData.config.color,
+								},
+							}}
+							formatDate={(v) =>
+								v.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+							}
 						/>
+					</div>
 
-						{#each chartData.xTicks as tick}
-							<text
-								x={tick.x}
-								y={chartHeight - 10}
-								fill="var(--theme-muted)"
-								font-size="11"
-								text-anchor="middle"
-							>
-								{tick.label}
-							</text>
-						{/each}
-					</svg>
-
-					<div class="mt-4 grid gap-4 md:grid-cols-3">
+					<div class="mt-4 grid gap-4 md:grid-cols-2">
 						<div
 							class="rounded-3xl border border-(--theme-border) bg-white px-4 py-3"
 						>
@@ -621,18 +493,6 @@
 								{chartData.mean.toFixed(1)}{chartData.config.unit}
 							</div>
 						</div>
-						<div
-							class="rounded-3xl border border-(--theme-border) bg-white px-4 py-3"
-						>
-							<div
-								class="text-xs uppercase tracking-[0.18em] text-(--theme-muted)"
-							>
-								Confidence band
-							</div>
-							<div class="mt-2 text-lg font-semibold text-(--theme-text)">
-								+/- {chartData.band.toFixed(1)}{chartData.config.unit}
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -642,52 +502,82 @@
 				data-testid="forecast-alerts"
 				class="rounded-[2rem] border border-(--theme-border) bg-(--theme-soft-60) p-6 shadow-(--theme-shadow)"
 			>
-				<div class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)">
-					Alerts
+				<div class="flex flex-wrap items-end justify-between gap-3">
+					<div>
+						<div class="text-sm uppercase tracking-[0.18em] text-(--theme-accent)">
+							ML Predictions
+						</div>
+						<h2
+							class="mt-2 text-2xl font-semibold text-(--theme-text)"
+							style="font-family: Georgia, 'Times New Roman', serif;"
+						>
+							5-day anomaly risks
+						</h2>
+					</div>
+					{#if predictionLoading}
+						<div class="text-sm text-(--theme-muted)">
+							Scoring the 5-day forecast...
+						</div>
+					{:else}
+						<div class="text-sm text-(--theme-muted)">
+							{selectedMode === "sensitive"
+								? "Sensitive mode"
+								: "Conservative mode"}
+						</div>
+					{/if}
 				</div>
-				<h2
-					class="mt-2 text-2xl font-semibold text-(--theme-text)"
-					style="font-family: Georgia, 'Times New Roman', serif;"
-				>
-					Detected anomalies
-				</h2>
-				<p class="mt-2 text-sm leading-6 text-(--theme-text)">
-					Initial rule-based flags using the short-range Open-Meteo forecast
-					window.
-				</p>
 
 				<div class="mt-5 grid gap-3">
-					{#if weather.anomalies.length === 0}
+					{#if predictionLoading}
 						<div
 							class="rounded-3xl border border-(--theme-border) bg-white/70 p-4 text-sm text-(--theme-text)"
 						>
-							No major anomalies in the current 48-hour forecast slice.
+							Evaluating anomalous patterns...
+						</div>
+					{:else if predictionError}
+						<div
+							class="rounded-3xl border border-[#e8b6ae] bg-[#fff0ed] p-4 text-sm text-[#8d3f35]"
+						>
+							{predictionError}
 						</div>
 					{:else}
-						{#each weather.anomalies as anomaly}
-							<div
-								class={`rounded-3xl border p-4 ${severityClasses(anomaly.severity)}`}
-							>
-								<div class="flex items-center justify-between gap-3">
-									<div class="text-base font-semibold">{anomaly.title}</div>
+						{#each weather.daily.slice(1, 6) as day}
+							{@const prediction = dailyPredictions[day.date]}
+							{#if prediction && prediction.anomalyPrediction.isAnomaly}
+								<div
+									class={`rounded-3xl border p-4 ${severityClasses(prediction.anomalyPrediction.severity)}`}
+								>
+									<div class="flex items-center justify-between gap-3">
+										<div class="text-base font-semibold">{prediction.categoryPrediction.label}</div>
+										<div
+											class="rounded-full bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.18em]"
+										>
+											{prediction.anomalyPrediction.severity}
+										</div>
+									</div>
+									<div class="mt-2 text-sm opacity-90">
+										Anomalous {prediction.categoryPrediction.dominantSignal.toLowerCase()} expected ({Math.round(prediction.anomalyPrediction.probability * 100)}% confidence).
+									</div>
 									<div
-										class="rounded-full bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.18em]"
+										class="mt-3 text-xs uppercase tracking-[0.18em] opacity-75"
 									>
-										{anomaly.severity}
+										{formatTime(day.date, {
+											weekday: "short",
+											month: "short",
+											day: "numeric",
+										})}
 									</div>
 								</div>
-								<div class="mt-2 text-sm opacity-90">{anomaly.reason}</div>
-								<div
-									class="mt-3 text-xs uppercase tracking-[0.18em] opacity-75"
-								>
-									{formatTime(anomaly.time, {
-										weekday: "short",
-										hour: "numeric",
-									})}
-									· {anomaly.metric}
-								</div>
-							</div>
+							{/if}
 						{/each}
+						
+						{#if Object.values(dailyPredictions).length > 0 && Object.values(dailyPredictions).every(p => !p.anomalyPrediction.isAnomaly)}
+							<div
+								class="rounded-3xl border border-(--theme-border) bg-white/70 p-4 text-sm text-(--theme-text)"
+							>
+								No major anomalies predicted in the next 5 days.
+							</div>
+						{/if}
 					{/if}
 				</div>
 			</div>
@@ -722,8 +612,8 @@
 				</a>
 			</div>
 
-			<div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-				{#each weather.daily as day}
+			<div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+				{#each weather.daily.slice(1, 6) as day}
 					<div
 						class="rounded-[1.6rem] border border-(--theme-border) bg-(--theme-soft-45) p-5"
 					>
